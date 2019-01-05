@@ -1,0 +1,10 @@
+version: 2.1
+docker:
+  build:
+    bcgraph:
+      docker:
+        - image: circleci/node:10
+        - context: ./bcgraph
+        - dockerfile: ./bcgraph/Dockerfile
+deploy:
+  ...

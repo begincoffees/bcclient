@@ -1,3 +1,0 @@
-endpoint: http://begincoffeesprisma.herokuapp.com/bcprisma/test
-managementApiSecret: 576eef8cb1f325292da28c44ff8c48237782409c
-datamodel: src/datamodel.graphql

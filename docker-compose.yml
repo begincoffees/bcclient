@@ -5,7 +5,7 @@ services:
     image: nginx:1.13.12-alpine
     restart: always
     ports:
-      - "80:80"
+      - "3000:80"
     networks:
       - bcapp-staging
     build: 
@@ -16,25 +16,27 @@ services:
       - /usr/share/nginx/html
     labels:
       - traefik.backend=web
-      - traefik.frontend.rule=Host:bcweb.docker.localhost
+      - traefik.frontend.rule=Host:client.web
       - traefik.docker.network=bcapp-staging
-  bcserver:
-    container_name: bcserver
+      - traefik.port=80
+  bcgraph:
+    container_name: bcgraph
     image: node:8.11.1-alpine
     build: 
-      context: ./server
+      context: ./bcgraph
       dockerfile: ./Dockerfile
     command: npm start
     restart: always
     ports: 
       - '6006:6006'
     volumes:
-      - bcserver:/usr/app/server
-      - /usr/app
+      - bcgraph:/usr/app/bcgraph
+      - /usr/app/bcgraph
     networks:
       - bcapp-staging
     labels:
-      - "traefik.frontend.rule=Host:bcserver.docker.localhost" 
+      - "traefik.frontend.rule=Host:bcgraph.docker.localhost"
+      - 'traefik.port=6006'
   bcproxy:
     container_name: proxy
     image: traefik
@@ -46,9 +48,9 @@ services:
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - bcweb:/usr/share/nginx/html
-      - bcserver:/usr/app
+      - bcgraph:/usr/app/bcgraph
     labels:
-      - traefik.frontend.rule=Host:bcproxy.docker.localhost
+      - traefik.frontend.rule=Host:bcapp.health
   whoami2:
     container_name: whoami
     image: emilevauge/whoami
@@ -59,7 +61,7 @@ services:
       - "traefik.frontend.rule=Host:whoami.docker.localhost"
 volumes:
   bcweb:
-  bcserver:
+  bcgraph:
 networks:
   bcapp-staging:
     external: true 

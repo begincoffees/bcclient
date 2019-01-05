@@ -2,9 +2,9 @@
   "AWSEBDockerrunVersion": 2,
   "volumes": [
     {
-      "name": "bcapi",
+      "name": "bcgraph",
       "host": {
-        "sourcePath": "/usr/app/server"
+        "sourcePath": "/usr/app/bcgraph"
       }
     },
     {
@@ -16,7 +16,7 @@
   ],
   "containerDefinitions": [
     {
-      "name": "bcapi",
+      "name": "bcgraph",
       "image": "node:8.12",
       "essential": true,
       "memory": 128,
@@ -32,8 +32,8 @@
       ],
       "mountPoints": [
         {
-          "sourceVolume": "bcapi",
-          "containerPath": "./usr/app/bcapi"
+          "sourceVolume": "bcgraph",
+          "containerPath": "./usr/app/bcgraph"
         }
       ]
     },
