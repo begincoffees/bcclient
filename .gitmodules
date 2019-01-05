@@ -1,0 +1,3 @@
+[submodule "server/bcapp"]
+	path = server/bcapp
+	url = http://github.com/andrewangelle/bcapp

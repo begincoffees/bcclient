@@ -22,14 +22,14 @@ services:
     container_name: bcserver
     image: node:8.11.1-alpine
     build: 
-      context: ./bcapi
+      context: ./server
       dockerfile: ./Dockerfile
     command: npm start
     restart: always
     ports: 
       - '6006:6006'
     volumes:
-      - bcserver:/usr/app/bcapi
+      - bcserver:/usr/app/server
       - /usr/app
     networks:
       - bcapp-staging

@@ -1,9 +1,11 @@
 ## BCweb
 UI for e-commerce mvp
 
+
 #### Tech Stack
  * Typescript 
  * React v16.7.0alpha
+ * Stripe
  * reach router
  * Webpack
  * Antd
