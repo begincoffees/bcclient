@@ -1,0 +1,19 @@
+projects:
+  app:
+    schemaPath: src/schema.graphql
+    extensions:
+      endpoints:
+        default: http://localhost:6006
+  database:
+    schemaPath: src/generated/prisma.graphql
+    includes: [
+      "prisma.graphql",
+      "datamodel.graphql",
+    ]
+    extensions:
+      prisma: prisma.yml
+      codegen:
+        - generator: prisma-binding
+          language: typescript
+          output:
+            binding: src/generated/prisma.ts

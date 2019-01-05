@@ -1,0 +1,65 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "volumes": [
+    {
+      "name": "bcapi",
+      "host": {
+        "sourcePath": "/usr/app/server"
+      }
+    },
+    {
+      "name": "bcweb",
+      "host": {
+        "sourcePath": "/usr/share/nginx/html"
+      }
+    }
+  ],
+  "containerDefinitions": [
+    {
+      "name": "bcapi",
+      "image": "node:8.12",
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 6006,
+          "containerPort": 6006
+        }
+      ],
+      "command": [
+        "/bin/bash",
+        "run.sh"
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "bcapi",
+          "containerPath": "./usr/app/bcapi"
+        }
+      ]
+    },
+    {
+      "name": "bcweb",
+      "image": "nginx:1.13.12-alpine",
+      "essential": true,
+      "memory": 256,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 80,
+          "readOnly": true
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "bcweb-logs",
+          "containerPath": "/usr/app/logs"
+        },
+        {
+          "sourceVolume": "bcweb",
+          "containerPath": "./usr/share/nginx/html",
+          "readOnly": true
+        }
+      ]
+    }
+  ]
+}

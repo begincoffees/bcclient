@@ -1,0 +1,5 @@
+build:
+  config:
+    NODE_ENV: development
+run:
+  web: npm start

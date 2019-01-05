@@ -1,0 +1,86 @@
+type User {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  role: String
+  permissions: [String!]!
+  email: String @unique
+  firstName: String
+  lastName: String
+  bizName: String
+  password: String
+  cart: Cart @unique
+  stripeId: String @unique
+  products: [Product!]!
+  purchases: [Invoice!]! @relation(name: "CUSTOMER")
+  sales: [Invoice!]! @relation(name: "VENDOR")
+  shippingAddresses: [ShippingAddress!]!
+}
+
+type Cart {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  itemCount: Int
+  totalPrice: String
+  user: User! @unique
+  items: [Product!]! @relation(name: "CART_ITEMS")
+}
+
+type Invoice {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  amount: String
+  email: String!
+  record: Json
+  stripeRecord: [PaymentRecord!]!
+  created: Int
+  stripePaymentId: String
+  stripeCustomerId: String
+  status: String
+  shippingAddress: ShippingAddress @unique
+  items: [Product!]! @relation(name: "INVOICE_ITEMS")
+  customer: User @relation(name: "CUSTOMER")
+  vendors: [User!]! @relation(name: "VENDOR")
+}
+
+type PaymentRecord {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  amount: Int!
+  balanceTransaction: String!
+  created: Int!
+  currency: String!
+  stripeCustomerId: String!
+  stripePaymentId: String!
+  status: String!
+  data: Json
+}
+
+type Product {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  name: String
+  price: String
+  description: String
+  varietal: String
+  vendor: User @unique
+  carts: [Cart!]! @relation(name: "CART_ITEMS")
+  purchases: [Invoice!]! @relation(name: "INVOICE_ITEMS")
+}
+
+type ShippingAddress {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  recipient: String!
+  street: String!
+  city: String!
+  state: String!
+  zip: String!
+  user: User @unique
+  invoices: [Invoice!]!
+}
