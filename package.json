@@ -65,8 +65,8 @@
   },
   "scripts": {
     "start": "dotenv -- node scripts/start.js",
-    "server": "cd server && npm start",
-    "dev": "concurrently \"cd server && npm start\" \"dotenv -- node scripts/start.js\"",
+    "server": "cd bcgraph && npm start",
+    "dev": "concurrently \"cd bcgraph && npm start\" \"dotenv -- node scripts/start.js\"",
     "build": "node scripts/build.js",
     "test": "node scripts/test.js --env=jsdom",
     "coverage": "jest --collectCoverageFrom=src/**.js --coverage src"

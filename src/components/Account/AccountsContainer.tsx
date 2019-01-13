@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useLayoutEffect } from 'react';
+import React, { Suspense, useState, useEffect } from 'react';
 import { useQuery } from 'react-apollo-hooks';
 import { Spin } from 'antd';
 
@@ -18,24 +18,29 @@ function AccountsContainer () {
   const [account,] = useState({role: ''})
   const [loading, setLoading] = useState(true)
   const {
-    data:{viewer: {me:{
-      purchases=[],
-      sales=[],
-      products=[],
-      ...user
-    }}}} = useQuery(userQuery)
+    data:{
+      viewer: {
+        me:{
+          purchases=[],
+          sales=[],
+          products=[],
+          ...user
+        }
+      }
+    }
+  } = useQuery(userQuery)
   const isVendor = account.role === 'VENDOR'
   
   
-  useLayoutEffect(() => {
+  useEffect(() => {
     userDispatch.call('UPDATE_USER', {purchases, sales, products, ...user})
     setLoading(false)
-  },[])
+  },[loading === true])
   
   if(loading){
     return <Loader />
   }
-  console.log(isVendor)
+
   return (
     <BcContainer margin="auto 3.5rem">
       <Suspense fallback={<Spin/>}>

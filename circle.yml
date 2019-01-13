@@ -1,10 +1,35 @@
-version: 2.1
-docker:
-  build:
-    bcgraph:
+workflows:
+version: 2
+  jobs:
+    build:
       docker:
         - image: circleci/node:10
-        - context: ./bcgraph
-        - dockerfile: ./bcgraph/Dockerfile
-deploy:
-  ...
+      working_directory: ~/repo
+      steps:
+        - checkout
+        - setup_remote_docker:
+            docker_layer_caching: true
+        - restore_cache:
+            keys:
+            - v1-dependencies-{{ checksum "package.json" }}
+            - v1-dependencies-
+        - run: npm install
+        - save_cache:
+            paths:
+              - node_modules
+            key: v1-dependencies-{{ checksum "package.json" }}
+        - run: npm build
+  - deploy:
+      requires:
+        - build
+      filters:
+        branches:
+          only: master
+      machine:
+        image: circleci/classic:edge
+        steps:
+          - checkout
+          - run: |
+              docker login -u $DOCKER_USER -p $DOCKER_PASS
+              docker build -t bcweb:latest bcapp/bcweb:latest .
+              docker push bcweb:latest bcapp/bcweb:latest

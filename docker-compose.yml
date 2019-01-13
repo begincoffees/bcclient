@@ -1,67 +1,77 @@
 version: '3'
 services:
-  bcweb:
-    container_name: bcweb
+  web:
+    container_name: web
     image: nginx:1.13.12-alpine
     restart: always
     ports:
       - "3000:80"
     networks:
-      - bcapp-staging
+      - bcapp
     build: 
       context: .
       dockerfile: ./Dockerfile
     volumes:
-      - bcweb:/usr/share/nginx/html
+      - web:/usr/share/nginx/html
       - /usr/share/nginx/html
     labels:
-      - traefik.backend=web
-      - traefik.frontend.rule=Host:client.web
-      - traefik.docker.network=bcapp-staging
+      - traefik.backend=whoami
+      - traefik.frontend.rule=Host:staging.bcapp
+      - traefik.docker.network=bcapp
       - traefik.port=80
-  bcgraph:
-    container_name: bcgraph
-    image: node:8.11.1-alpine
+  graph:
+    container_name: graph
+    image: node:8.11.2-alpine
     build: 
       context: ./bcgraph
       dockerfile: ./Dockerfile
     command: npm start
+    networks:
+      - bcapp 
     restart: always
+    environment: 
+      SERVER_PORT:
     ports: 
       - '6006:6006'
     volumes:
-      - bcgraph:/usr/app/bcgraph
-      - /usr/app/bcgraph
+      - graph:/usr/app/bcgraph
+      - /usr/app/
     networks:
-      - bcapp-staging
+      - bcapp 
     labels:
-      - "traefik.frontend.rule=Host:bcgraph.docker.localhost"
-      - 'traefik.port=6006'
-  bcproxy:
+      - traefik.backend=whoami
+      - traefik.frontend.rule=Host:whoami.docker.localhost
+      - traefik.docker.network=bcapp
+      - traefik.port=6006
+  proxy:
     container_name: proxy
     image: traefik
     command: --api --docker
-    networks:
-      - bcapp-staging  
+    environment:
+      PROXY_PORT:
     ports:
-      - "8080:8080"
+      - 8080:8080
+    networks:
+      - bcapp 
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - bcweb:/usr/share/nginx/html
-      - bcgraph:/usr/app/bcgraph
-    labels:
-      - traefik.frontend.rule=Host:bcapp.health
-  whoami2:
-    container_name: whoami
-    image: emilevauge/whoami
+      - graph:/usr/app/bcgraph
     networks:
-      - bcapp-staging
+      - bcapp 
     labels:
-      - "traefik.backend=whoami"
-      - "traefik.frontend.rule=Host:whoami.docker.localhost"
+      - traefik.backend=proxy
+      - traefik.frontend.rule=Host:proxy
+  whoami:
+    container_name: bcwhoami
+    image: containous/whoami
+    restart: always
+    networks:
+      - bcapp
 volumes:
-  bcweb:
-  bcgraph:
+  web:
+  proxy:
+  graph:
+  whoami:
 networks:
-  bcapp-staging:
+  bcapp: 
     external: true 

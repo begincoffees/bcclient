@@ -1,5 +1,26 @@
 defaultEntryPoints = ["http", "https"]
 
+endpoint = "unix:///var/run/docker.sock"
+
+domain = "docker.localhost"
+
+watch = true
+
+exposedByDefault = true
+
+
+usebindportip = true
+
+
+swarmMode = true
+
+
+swarmModeRefreshSeconds = 15
+
+
+network = "bcapp"
+
+
 
 [entryPoints]
   [entryPoints.http]
@@ -7,7 +28,7 @@ defaultEntryPoints = ["http", "https"]
     compress = true
 
     [entryPoints.https.whitelist]
-      sourceRange = ["127.0.0.1, 165.227.100.71, 172.23.0.1"]
+      sourceRange = ["127.0.0.1", "172.20.0.1","172.20.0.2","172.20.0.3", "172.20.0.4"]
       useXForwardedFor = true
 
     [entryPoints.https.tls]
@@ -30,7 +51,7 @@ defaultEntryPoints = ["http", "https"]
     [entryPoints.https.auth]
       headerField = "X-httpsAuth-User"
       [entryPoints.https.auth.basic]
-        removeHeader = true
+        removeHeader = false
         users = [
           "test:$apr1$H6uskkkW$IgXLP6ewTrSuBkTrqE8wj/",
           "test2:$apr1$d9hr9HBB$4HxwgUir3HP4EsggP/QNo0",

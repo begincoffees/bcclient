@@ -29,7 +29,7 @@
     "jest",
     "src/setupTests.ts",
     "server",
-    "bcapi"
-    
+    "bcapi",
+    "bcgraph"
   ]
 }

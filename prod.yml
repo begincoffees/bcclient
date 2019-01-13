@@ -1,0 +1,45 @@
+version: '3'
+services:
+  web:
+    image: nginx:1.13.12-alpine
+    ports:
+      - "80:80"
+    volumes:
+      - web:/usr/share/nginx/html
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - traefik.backend=web
+      - traefik.frontend.rule=Host:staging.bcapp
+      - traefik.port=80
+  graph:
+    image: node:8.11.2-alpine
+    command: npm start
+    environment: 
+      SERVER_PORT:
+    ports: 
+      - '6006:6006'
+    volumes:
+      - graph:/usr/app/bcgraph
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - traefik.frontend.rule=Host:graph
+      - traefik.port=6006
+  proxy:
+    image: traefik
+    command: --api --docker
+    environment:
+      PROXY_PORT:
+    ports:
+      - 8080:8080 
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    labels:
+      - traefik.backend=proxy
+      - traefik.frontend.rule=Host:proxy
+  whoami:
+    image: containous/whoami
+volumes:
+  web:
+  proxy:
+  graph:
+  whoami:

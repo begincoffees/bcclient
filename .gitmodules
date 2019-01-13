@@ -1,6 +1,3 @@
-[submodule "server/bcapp"]
-	path = server/bcapp
-	url = http://github.com/andrewangelle/bcapp
 [submodule "bcgraph"]
 	path = bcgraph
 	url = http://github.com/begincoffees/bcapi
