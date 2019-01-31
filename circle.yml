@@ -1,5 +1,4 @@
 version: 2
-workflows:
   jobs:
     build:
       docker:
