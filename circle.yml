@@ -1,5 +1,5 @@
-workflows:
 version: 2
+workflows:
   jobs:
     - build:
       docker:
@@ -19,7 +19,7 @@ version: 2
               - node_modules
             key: v1-dependencies-{{ checksum "package.json" }}
         - run: npm build
-    - deploy:
+    deploy:
         requires:
           - build
         filters:
