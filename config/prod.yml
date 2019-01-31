@@ -1,0 +1,71 @@
+version: '2'
+services:
+  client:
+    image: nginx:1.18-alpine
+    restart: always
+    build:
+      context: ./client
+      dockerfile: ./Dockerfile
+    ports:
+      - "80:80"
+    networks:
+      - bcapp
+    volumes:
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./client:/usr/share/nginx/html 
+networks:
+  bcapp:
+    driver: bridge
+
+
+
+// nginx . conf
+server {
+  listen 80;
+  listen [::]:80;
+  server_name bcweb.me www.bcweb.me staging.bcweb.me www.staging.bcweb.me;
+
+  location ~ /.well-known/acme-challenge {
+      allow all;
+      root /usr/share/nginx/html;
+  }
+
+  root /usr/share/nginx/html;
+  try_files $uri index.html;
+}
+
+// staging certificate
+sudo docker run -it --rm \
+  -v /etc/letsencrypt:/etc/letsencrypt \
+  -v /var/lib/client:/var/lib/client \
+  -v /client:/data/letsencrypt \
+  -v /logs:/var/log/client \
+  certbot/certbot \
+  certonly --webroot \
+  --register-unsafely-without-email --agree-tos \
+  --webroot-path=/data/letsencrypt \
+  --staging \
+  -d bcweb.me -d www.bcweb.me api.bcweb.me www.api.bcweb.me
+
+
+// staging certificate info
+sudo docker run --rm -it --name certbot \
+  -v /etc/letsencrypt:/etc/letsencrypt \
+  -v /var/lib/letsencrypt:/var/lib/letsencrypt \
+  -v usr/src/client:/data/letsencrypt \
+  certbot/certbot \
+  --staging \
+  certificates
+
+
+// request prod cert
+sudo docker run -it --rm \
+  -v /certs:/etc/letsencrypt \
+  -v /lib:/var/lib/client \
+  -v /client:/data/letsencrypt \
+  -v /logs:/var/log/client \
+  certbot/certbot \
+  certonly --webroot \
+  --email admin@bcweb.me --agree-tos --no-eff-email \
+  --webroot-path=/data/letsencrypt \
+  -d *.bcweb.me -d www.bcweb.me

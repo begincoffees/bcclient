@@ -19,20 +19,20 @@ version: 2
               - node_modules
             key: v1-dependencies-{{ checksum "package.json" }}
         - run: npm build
-  deploy:
-      requires:
-        - build
-      filters:
-        branches:
-          only: master
-      machine:
-        image: circleci/classic:edge
-        steps:
-          - checkout
-          - run: |
-              docker login -u $DOCKER_USER -p $DOCKER_PASS
-              docker build -t bcweb:latest bcapp/bcweb:latest .
-              docker push bcweb:latest bcapp/bcweb:latest
+    deploy:
+        requires:
+          - build
+        filters:
+          branches:
+            only: master
+        machine:
+          image: circleci/classic:edge
+          steps:
+            - checkout
+            - run: |
+                docker login -u $DOCKER_USER -p $DOCKER_PASS
+                docker build -t bcweb:latest bcapp/bcweb:latest .
+                docker push bcweb:latest bcapp/bcweb:latest
 
 
               
