@@ -18,7 +18,10 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
       - run: npm run build
-      - run: docker build -t bcapp/bcweb:latest .
+      - run: docker build -t bcweb:latest .
+      - run: docker login --username bcapp --password 89jmynsq
+      - run: docker tag bcweb:latest bcapp/bcweb:latest
+      - run: docker push bcapp/bcweb:latest
 workflows:
   version: 2
   build:
