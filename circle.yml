@@ -1,7 +1,7 @@
 version: 2
 workflows:
   jobs:
-    - build:
+    build:
       docker:
         - image: circleci/node:10
       working_directory: ~/repo
