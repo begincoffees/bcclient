@@ -19,7 +19,7 @@ version: 2
               - node_modules
             key: v1-dependencies-{{ checksum "package.json" }}
         - run: npm build
-  - deploy:
+  deploy:
       requires:
         - build
       filters:
@@ -33,3 +33,6 @@ version: 2
               docker login -u $DOCKER_USER -p $DOCKER_PASS
               docker build -t bcweb:latest bcapp/bcweb:latest .
               docker push bcweb:latest bcapp/bcweb:latest
+
+
+              

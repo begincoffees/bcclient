@@ -14,9 +14,6 @@ const token = localStorage.getItem('BC_AUTH') || 'bigboi';
 
 const httpLink = createHttpLink({
   uri: `${process.env.REACT_APP_SERVER_URL}/bcgraph`, 
-  headers: {
-    Authorization: `Bearer ${token}`
-  }
 })
 
 const query = `?headers={Authorization:Bearer ${process.env.REACT_APP_PRISMA_WEB_SOCKET_TOKEN}}`
@@ -41,7 +38,7 @@ const link = split(({ query }) => {
     )
   },
   wsLink,
-  httpLink
+  authLink.concat(httpLink)
 );
 
 persistCache({
@@ -50,7 +47,7 @@ persistCache({
 })
 
 const client = new ApolloClient({
-  link: ApolloLink.from([authLink.concat(link)]),
+  link,
   cache,
 })
 
