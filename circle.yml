@@ -12,12 +12,10 @@ jobs:
           keys:
           - v1-dependencies-{{ checksum "package.json" }}
           - v1-dependencies-
-      - run: npm install
       - save_cache:
           paths:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
-      - run: npm run build
       - run: docker build -t bcweb:latest .
       - run: docker login --username $DOCKER_USER --password $DOCKER_PW
       - run: docker tag bcweb:latest bcapp/bcweb:latest
