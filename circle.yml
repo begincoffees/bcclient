@@ -1,7 +1,7 @@
 workflows:
 version: 2
   jobs:
-    build:
+    - build:
       docker:
         - image: circleci/node:10
       working_directory: ~/repo
@@ -19,7 +19,7 @@ version: 2
               - node_modules
             key: v1-dependencies-{{ checksum "package.json" }}
         - run: npm build
-    deploy:
+    - deploy:
         requires:
           - build
         filters:
