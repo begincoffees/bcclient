@@ -26,15 +26,7 @@ jobs:
     steps:
       - checkout
       - run: 
-          command: 'ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP'
-      - run:    
-          command: 'docker-compose down'
-      - run:    
-          command: 'rm -rf bcclient'
-      - run:    
-          command: 'git clone http://github.com/begincoffees/bcclient.git bcclient'
-      - run:
-          command: 'docker-compose up -d'
+          command: 'ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "make"'
 workflows:
   version: 2
   build_and_deploy:
