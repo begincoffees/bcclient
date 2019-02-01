@@ -9,8 +9,7 @@ jobs:
       - run: docker login --username $DOCKER_USER --password $DOCKER_PW
       - run: docker tag bcweb:latest bcapp/bcweb:latest
       - run: docker push bcapp/bcweb:latest
-
-  deploy-web:
+  deploy_web:
     docker:
       - image: bcapp/bcweb:latest
     steps:
@@ -21,19 +20,15 @@ jobs:
       - run: docker-compose up -d
 workflows:
   version: 2
-  build:
-    jobs:
-      - deploy_web
-    deploy_web:
-        requires:
-          - build
-        filters:
-          branches:
-            only: master
-        machine:
-          image: circleci/classic:edge
-          steps:
-            - checkout
+    build_and_deploy:
+      jobs:
+        - build
+        - deploy_web:
+            filters:
+              branches:
+                only: master
+            requires:
+              - build
 
 
 
