@@ -5,6 +5,16 @@ jobs:
       - image: circleci/node:10
     steps:
       - checkout
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          - v1-dependencies-
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
       - run: docker build -t bcweb:latest .
       - run: docker login --username $DOCKER_USER --password $DOCKER_PW
       - run: docker tag bcweb:latest bcapp/bcweb:latest
