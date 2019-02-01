@@ -1,29 +1,26 @@
 version: '3'
 services:
-  web:
-    container_name: web
+  circleci-web:
+    container_name: circleci-web
     image: nginx:1.13.12-alpine
     restart: always
     ports:
-      - "5000:80"
-    build: 
-      context: ./client
-      dockerfile: ./Dockerfile
+      - "4040:80"
+    build: . 
     networks:
       - bcapp
+      - default
     volumes:
-      - web:/usr/share/nginx/html
+      - circleci-web:/usr/share/nginx/html
       - /usr/share/nginx/html
-  whoami:
-    container_name: bcwhoami
+  circleci-web-whoami:
+    container_name: circleci-web-whoami
     image: containous/whoami
     restart: always
     ports: 
-      - "3000:80"
+      - "3030:80"
     networks:
       - bcapp
-volumes:
-  web:
 networks:
   bcapp: 
     external: true 

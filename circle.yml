@@ -6,38 +6,27 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - setup_remote_docker:
-          docker_layer_caching: true
-      - restore_cache:
-          keys:
-          - v1-dependencies-{{ checksum "package.json" }}
-          - v1-dependencies-
-      - save_cache:
-          paths:
-            - node_modules
-          key: v1-dependencies-{{ checksum "package.json" }}
       - run: docker build -t bcweb:latest .
       - run: docker login --username $DOCKER_USER --password $DOCKER_PW
       - run: docker tag bcweb:latest bcapp/bcweb:latest
       - run: docker push bcapp/bcweb:latest
   deploy_web:
-    docker:
-      - image: 'circleci/node:10-alpine'
+    machine: 
+      enabled: true
     steps:
       - checkout
       - run: 
-          command: 'ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "make"'
+          command: 'ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "sh bcweb.sh"'
 workflows:
   version: 2
-  build_and_deploy:
-    jobs:
-      - build
-      - deploy_web:
-          filters:
-            branches:
-              only: master
-          requires:
-            - build
+  jobs:
+    - build
+    - deploy_web:
+        filters:
+          branches:
+            only: master
+        requires:
+          - build
 
 
 
