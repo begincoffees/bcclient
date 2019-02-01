@@ -21,6 +21,8 @@ jobs:
       - run: docker tag bcweb:latest bcapp/bcweb:latest
       - run: docker push bcapp/bcweb:latest
   deploy_web:
+    docker:
+      - image: 'circleci/node:10-alpine'
     steps:
       - checkout
       - run: 
