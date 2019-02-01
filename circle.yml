@@ -19,7 +19,7 @@ jobs:
       - run: git clone http://github.com/begincoffees/bcclient.git bcclient
       - run: docker-compose up -d
 workflows:
-version: 2
+  version: 2
   build_and_deploy:
     jobs:
       - build
