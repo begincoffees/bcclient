@@ -22,12 +22,7 @@ workflows:
   version: 2
   deploy_bccicd:
     - build
-    - deploy_web:
-        requires:
-          - build
-        filters:
-          branches:
-            only: master
+    - deploy_web
 
 
 
