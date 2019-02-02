@@ -16,20 +16,17 @@ jobs:
     steps:
       - checkout
       - run: 
-          command: 'ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "sh bcweb.sh"'
-workflows:
-  version: 2
-  build_and_deploy:
-    jobs:
-      - build
-      - deploy_web:
-          machine:
-            enabled: true
-          filters:
-            branches:
-              only: master
-          requires:
-            - build
+          command: 'ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "./deploy_bcweb.sh"'
+# workflows:
+#   version: 2
+#     jobs:
+#       - build
+#       - deploy_web:
+#           filters:
+#             branches:
+#               only: master
+#           requires:
+#             - build
 
 
 
