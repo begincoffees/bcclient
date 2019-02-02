@@ -11,22 +11,25 @@ jobs:
       - run: docker tag bcweb:latest bcapp/bcweb:latest
       - run: docker push bcapp/bcweb:latest
   deploy_web:
-    machine: 
-      enabled: true
+    docker:
+      - image: 'circleci/nginx:latest'
     steps:
       - checkout
       - run: 
           command: 'ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "sh bcweb.sh"'
 workflows:
   version: 2
-  jobs:
-    - build
-    - deploy_web:
-        filters:
-          branches:
-            only: master
-        requires:
-          - build
+  build_and_deploy:
+    jobs:
+      - build
+      - deploy_web:
+          machine:
+            enabled: true
+          filters:
+            branches:
+              only: master
+          requires:
+            - build
 
 
 
