@@ -12,7 +12,7 @@ jobs:
       - run: docker push bcapp/bcweb:latest
   deploy_web:
     docker:
-      - image: 'circleci/nginx:latest'
+      - image: circleci/node:10
     steps:
       - checkout
       - run: 
@@ -27,6 +27,7 @@ jobs:
 #               only: master
 #           requires:
 #             - build
+# a;oigj a;odifgh
 
 
 
