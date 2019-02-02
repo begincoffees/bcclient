@@ -20,14 +20,15 @@ jobs:
       - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "./deploy_bcweb.sh"
 workflows:
   version: 2
-  jobs:
+  deploy_bccicd:
     - build
     - deploy_web:
+        requires:
+          - build
         filters:
           branches:
             only: master
-        requires:
-          - build
+
 
 
 
