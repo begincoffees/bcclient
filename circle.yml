@@ -8,10 +8,10 @@ jobs:
       - checkout
       - add_ssh_keys:
           fingerprints:
-            - "17:d1:fc:c0:84:b6:c9:c4:c4:5b:d7:2a:80:be:5a:33"
+            - "d3:ab:3c:93:d7:0b:99:b8:a9:b9:c9:bd:e7:e6:65:5e"
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "echo 'bccicd SSH Successful'"
+      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP 
       # - run: docker build -t bcweb:latest .
       # - run: docker login --username $DOCKER_USER --password $DOCKER_PW
       # - run: docker tag bcweb:latest bcapp/bcweb:latest
