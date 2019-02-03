@@ -11,7 +11,7 @@ jobs:
             - "bf:3a:ee:84:d1:bf:ae:28:c6:44:ae:99:49:cd:3d:02"
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: ssh -oStrictHostKeyChecking=no -v circleci@$DROPLET_IP >> $DOPW
+      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP >> $DOPW
       # - run: docker build -t bcweb:latest .
       # - run: docker login --username $DOCKER_USER --password $DOCKER_PW
       # - run: docker tag bcweb:latest bcapp/bcweb:latest
