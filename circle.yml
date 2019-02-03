@@ -8,6 +8,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
+      - run: ssh-copy-id $DROPLET_USER@$DROPLET_IP
       - run: docker build -t bcweb:latest .
       - run: docker login --username $DOCKER_USER --password $DOCKER_PW
       - run: docker tag bcweb:latest bcapp/bcweb:latest
