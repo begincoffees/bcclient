@@ -8,7 +8,7 @@ jobs:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: ssh root@$DROPLET_IP >> $DOPW >> echo 'bccicd SSH Succeeded'
+      - run: ssh root@$DROPLET_IP >> $DOPW >> Yes >> echo 'bccicd SSH Succeeded'
       - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP  "echo 'bccicd SSH Succeeded'"
       # - run: docker build -t bcweb:latest .
       # - run: docker login --username $DOCKER_USER --password $DOCKER_PW
