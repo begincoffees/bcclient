@@ -6,12 +6,9 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "17:d1:fc:c0:84:b6:c9:c4:c4:5b:d7:2a:80:be:5a:33"
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP -i ~/.ssh/known_hosts "echo 'bccicd SSH Successful'"
+      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "echo 'bccicd SSH Successful'"
       # - run: docker build -t bcweb:latest .
       # - run: docker login --username $DOCKER_USER --password $DOCKER_PW
       # - run: docker tag bcweb:latest bcapp/bcweb:latest
@@ -22,6 +19,7 @@ jobs:
       - image: circleci/node:10
     steps:
       - checkout
+      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP
       - run: echo 'Starting Deployment For bcweb'
 workflows:
   version: 2
