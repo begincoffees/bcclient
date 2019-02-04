@@ -22,5 +22,5 @@ services:
 volumes:
   web:
 networks:
-  bcapp: 
-    driver: bridge 
+  bcapp:
+    external: true 
