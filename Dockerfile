@@ -8,7 +8,6 @@ RUN npm run build
 
 FROM nginx:1.13.12-alpine 
 RUN rm -rf /etc/nginx/conf.d
-
 COPY --from=build-stage /usr/app/nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=build-stage /usr/app/build/ /usr/share/nginx/html/
 
