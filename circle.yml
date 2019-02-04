@@ -11,6 +11,7 @@ jobs:
             - "c3:0d:5c:b0:da:c9:c4:92:ed:49:8d:14:e7:5f:02:f9"
       - setup_remote_docker:
           docker_layer_caching: true
+      - run: ssh-keyscan 142.93.255.222 >> ~/.ssh/known_hosts
       - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "echo ok" 
       # - run: docker build -t bcweb:latest .
       # - run: docker login --username $DOCKER_USER --password $DOCKER_PW
