@@ -12,7 +12,7 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "cd bcweb && git pull origin master"
-      - run: echo 'Build for bcweb.me successful' 
+      - run: echo 'Build for bcweb.me successfull' 
   deploy_web:
     docker:
       - image: circleci/node:10
@@ -22,7 +22,7 @@ jobs:
           fingerprints:
             - "c3:0d:5c:b0:da:c9:c4:92:ed:49:8d:14:e7:5f:02:f9"
       - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "sh deploy-web.sh"
-      - run: echo 'Deploy for bcweb.me successful' 
+      - run: echo 'Deploy for bcweb.me successfull' 
 workflows:
   version: 2
   build-and-deploy:
