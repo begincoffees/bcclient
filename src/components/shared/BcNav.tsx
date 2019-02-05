@@ -70,6 +70,10 @@ function BcNav(props: any) {
           </Link>
         </Menu.Item>
 
+        <Menu.Item key="/random">
+          <span>Random</span>
+        </Menu.Item>
+
           <Menu.Item 
             key="/cart" 
             onClick={props.toggleCart}
