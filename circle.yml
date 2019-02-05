@@ -6,12 +6,12 @@ jobs:
     working_directory: ~/repo
     steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "c3:0d:5c:b0:da:c9:c4:92:ed:49:8d:14:e7:5f:02:f9"
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "sh deploy-web.sh"
+      - run: docker build -t bcgraph:latest .
+      - run: docker login --username $DOCKER_USER --password $DOCKER_PW
+      - run: docker tag bcgraph:latest bcapp/bcweb:latest
+      - run: docker push bcapp/bcgraph:latest
   deploy_web:
     docker:
       - image: circleci/node:10
@@ -20,8 +20,9 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "c3:0d:5c:b0:da:c9:c4:92:ed:49:8d:14:e7:5f:02:f9"
-      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "echo success"
-dworkflows:
+      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP
+      - run: sh deploy-web.sh
+workflows:
   version: 2
   build-and-deploy:
     jobs:
