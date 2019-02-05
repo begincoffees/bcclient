@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Col, Card, Spin } from 'antd';
 
 import { AddItemButton } from 'src/components';
-import { navigate } from '@reach/router';
+// import { navigate } from '@reach/router';
 import { ProductData } from '../Shop';
 
 interface CardProps {
@@ -78,8 +78,9 @@ class ProductCard extends Component<CardProps, State> {
       <Col 
         span={6} 
         onClick={() => {
-          this.props.viewPage(this.props.data)
-          navigate('/product')
+          // this.props.viewPage(this.props.data)
+          // navigate('/product')
+          console.info('product clicked')
         }}
       >
         {this.state.loading ?
