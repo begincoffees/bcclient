@@ -1,5 +1,5 @@
 ## bcweb
-  [![CircleCI](https://circleci.com/gh/begincoffees/bcclient.svg?style=shield)](https://circleci.com/gh/begincoffees/bcclient)
+  [![CircleCI](https://circleci.com/gh/begincoffees/bcclient/tree/master.svg?style=svg)](https://circleci.com/gh/begincoffees/bcclient/tree/master)
   [![Uptime Robot status](https://img.shields.io/uptimerobot/status/m779426128-6b6e81ed8dc987db17d4cad2.svg)](https://status.bcweb.me)
 
 An full-stack MVP web-app for an e-commerce platform.
