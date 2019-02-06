@@ -6,7 +6,7 @@ import { useUserState  } from 'src/store';
 
 function LandingPage(props: any) {
   const user = useUserState();
-  console.info('cicd test deploy message')
+  console.log('cicd test deploy message');
   return (
     <BcContainer>
       <Row style={{ margin: 'auto 3.75rem' }}>

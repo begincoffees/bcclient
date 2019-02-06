@@ -5,14 +5,15 @@ jobs:
       - image: circleci/node:10
     working_directory: ~/repo
     steps:
+    steps:
       - checkout
-      - add_ssh_keys:
-          fingerprints:
-            - "c3:0d:5c:b0:da:c9:c4:92:ed:49:8d:14:e7:5f:02:f9"
       - setup_remote_docker:
           docker_layer_caching: true
-      - run: echo 'Build start from bcweb.me'
-      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "bash ./build-web.sh"
+      - run: echo 'Building image for bcweb.me'
+      - run: docker build -t bcgraph:latest .
+      - run: docker login --username $DOCKER_USER --password $DOCKER_PW
+      - run: docker tag bcgraph:latest bcapp/bcgraph:latest
+      - run: docker push bcapp/bcgraph:latest
       - run: echo 'Build success for bcweb.me'
   deploy_api:
     docker:
@@ -25,6 +26,9 @@ jobs:
       - run: echo 'Deployment start for bcweb.me'
       - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "bash ./deploy-web.sh"
       - run: echo 'Deployment success for bcweb.me'
+    notify:
+      webhooks:
+        - url: https://some.url.com/circleci-hooks
 workflows:
   version: 2
   build-and-deploy:
