@@ -9,7 +9,7 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run: echo 'Building image for bcweb.me'
-      - run: 'curl -X POST -H {Content-type: application/json} --data '{"text":"Deployment starting for bcweb.me"}' $SLACKHOOK'
+      - run: 'curl -X POST -H {"Content-type": "application/json"} --data {"text":"Deployment starting for bcweb.me"} $SLACKHOOK'
       - run: docker build -t bcgraph:latest .
       - run: docker login --username $DOCKER_USER --password $DOCKER_PW
       - run: docker tag bcgraph:latest bcapp/bcgraph:latest
