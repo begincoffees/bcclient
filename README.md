@@ -1,6 +1,7 @@
 ## bcweb
   [![CircleCI](https://circleci.com/gh/begincoffees/bcclient/tree/master.svg?style=svg)](https://circleci.com/gh/begincoffees/bcclient/tree/master)
   [![Uptime Robot status](https://img.shields.io/uptimerobot/status/m779426128-6b6e81ed8dc987db17d4cad2.svg)](https://status.bcweb.me)
+  [https://img.shields.io/badge/slack-@oresoftware/npp-yellow.svg?logo=slack]('https://amadev.slack.com/messages/CD5NZ94KV/')
 
 An full-stack MVP web-app for an e-commerce platform.
 
