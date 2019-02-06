@@ -5,7 +5,6 @@ jobs:
       - image: circleci/node:10
     working_directory: ~/repo
     steps:
-    steps:
       - checkout
       - setup_remote_docker:
           docker_layer_caching: true
