@@ -12,7 +12,7 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run: echo 'Build start from bcweb.me'
-      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "sh build-web.sh"
+      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "bash ./build-web.sh"
       - run: echo 'Build success for bcweb.me'
   deploy_api:
     docker:
@@ -23,7 +23,7 @@ jobs:
           fingerprints:
             - "c3:0d:5c:b0:da:c9:c4:92:ed:49:8d:14:e7:5f:02:f9"
       - run: echo 'Deployment start for bcweb.me'
-      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "sh deploy-web.sh"
+      - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "bash ./deploy-web.sh"
       - run: echo 'Deployment success for bcweb.me'
 workflows:
   version: 2
