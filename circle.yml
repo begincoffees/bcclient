@@ -9,6 +9,7 @@ jobs:
       - setup_remote_docker:
           docker_layer_caching: true
       - run: echo 'Building image for bcweb.me'
+      - run: 'curl -X POST -H {Content-type: application/json} --data '{"text":"Deployment starting for bcweb.me"}' $SLACKHOOK'
       - run: docker build -t bcgraph:latest .
       - run: docker login --username $DOCKER_USER --password $DOCKER_PW
       - run: docker tag bcgraph:latest bcapp/bcgraph:latest
@@ -25,9 +26,6 @@ jobs:
       - run: echo 'Deployment start for bcweb.me'
       - run: ssh -oStrictHostKeyChecking=no -v $DROPLET_USER@$DROPLET_IP "bash ./deploy-web.sh"
       - run: echo 'Deployment success for bcweb.me'
-    notify:
-      webhooks:
-        - url: https://some.url.com/circleci-hooks
 workflows:
   version: 2
   build-and-deploy:
