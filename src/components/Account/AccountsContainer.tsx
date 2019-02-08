@@ -1,4 +1,5 @@
 import React, { Suspense, useState, useEffect } from 'react';
+import { withApollo } from 'react-apollo';
 import { useQuery } from 'react-apollo-hooks';
 import { Spin } from 'antd';
 
@@ -12,7 +13,7 @@ import {
 import { userQuery, useUserDispatch, useUserState } from 'src/store';
 import { Loader } from '../shared';
 
-function AccountsContainer () {
+function Accounts () {
   const userState = useUserState()
   const userDispatch = useUserDispatch();
   const [account,] = useState({role: ''})
@@ -53,4 +54,5 @@ function AccountsContainer () {
   )
 }
 
+const AccountsContainer = withApollo(Accounts)
 export { AccountsContainer } 
