@@ -41,7 +41,7 @@
     "react-apollo": "^2.1.6",
     "react-apollo-hooks": "^0.2.1",
     "react-dev-utils": "^5.0.1",
-    "react-dom": "^16.7.0-alpha.2",
+    "react-dom": "^16.8.0",
     "react-paypal-button": "^1.2.2",
     "react-stripe-elements": "^2.0.1",
     "resolve": "1.6.0",

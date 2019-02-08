@@ -52,7 +52,4 @@ $ npm run build
 Open up the app at http://localhost:3000
 
 
-#### Production Build
-* react-scripts with node 10 for build stage
-* NGINX web server
-* Docker container
+
