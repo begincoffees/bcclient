@@ -1,7 +1,7 @@
 import React, {
-  createContext, 
-  Dispatch, 
-  useReducer, 
+  createContext,
+  Dispatch,
+  useReducer,
   useContext,
   useEffect,
 } from 'react';
@@ -16,6 +16,10 @@ export interface UserState {
   readonly email?: string,
   readonly id?: string,
   readonly stripeId?: string,
+  readonly purchases?: any;
+  readonly sales?: any;
+  readonly products?: any;
+  readonly role?: string;
 }
 
 const initialUserState: UserState = {
@@ -30,8 +34,8 @@ export type UserAction = {
   stripeId?: string,
 }
 
-function userReducer(state: UserState, action: UserAction){
-  switch(action.type){
+function userReducer(state: UserState, action: UserAction) {
+  switch (action.type) {
     case 'UPDATE_USER':
       const { email, id, stripeId } = action
       return {
@@ -54,20 +58,20 @@ const useUserState = () => useContext(UserStore);
 
 
 // tslint:disable-next-line:typedef
-function UserProvider({children}) {
+function UserProvider({ children }) {
   const { data, errors } = useQuery(userQuery);
   const [state, dispatch] = useReducer(userReducer, initialUserState);
-  
+
   /** basically create an observable on the token */
   const token = localStorage.getItem('BC_AUTH');
-  
+
   /**
    * if logged in, query for user info and update store
    */
 
   useEffect(() => {
     const user = data && data.viewer && data.viewer.me
-    
+
     dispatch({
       type: 'UPDATE_USER',
       isLoggedIn: !!token,
@@ -75,15 +79,15 @@ function UserProvider({children}) {
       email: user && user.email || '',
       stripeId: user && user.stripeId || ''
     })
-    
-  },[token])
+
+  }, [token])
 
 
-  if(errors) {
+  if (errors) {
     return (
-      <Alert 
-        type="error" 
-        message="Whoops! Refresh me beb!" 
+      <Alert
+        type="error"
+        message="Whoops! Refresh me beb!"
         banner={true}
         showIcon={false}
       />
@@ -99,7 +103,7 @@ function UserProvider({children}) {
   )
 }
 
-export { 
+export {
   userReducer,
   UserStore,
   UserDispatch,

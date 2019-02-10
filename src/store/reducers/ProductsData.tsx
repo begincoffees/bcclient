@@ -1,19 +1,18 @@
 import React, { useCallback, createContext, Dispatch, useContext, useReducer } from 'react';
 import { ProductData } from 'src/components';
 
-interface ProductsState extends ProductData {}
+interface ProductsState extends ProductData { }
 
 type ProductActionKeys = 'PRODUCT_CLICKED'
 
 export interface ProductsAction {
   readonly type: ProductActionKeys;
   readonly data: ProductData
-} 
+}
 
 function productsReducer(state: ProductsState, action: ProductsAction) {
-  switch(action.type){
+  switch (action.type) {
     case 'PRODUCT_CLICKED':
-      console.log(action.data)
       return {
         ...action.data
       }
@@ -32,15 +31,15 @@ export const ProductsDispatch = createContext((() => initialState) as Dispatch<P
 // updater dispatch functions
 const productsDispatchSelector = () => {
   const dispatch = useContext(ProductsDispatch);
-  
-  const productClick = useCallback((data: ProductData) => 
+
+  const productClick = useCallback((data: ProductData) =>
     dispatch({
-      type: 'PRODUCT_CLICKED', 
+      type: 'PRODUCT_CLICKED',
       data
     } as any),
     [dispatch]
   )
-  
+
 
   return ({
     productClick
@@ -51,11 +50,11 @@ const productsDispatchSelector = () => {
 const productsStateSelector = () => {
   const state = useContext(ProductsState);
 
-  return {...state}
+  return { ...state }
 }
 
 // tslint:disable-next-line:typedef
-function ProductsProvider({children}){
+function ProductsProvider({ children }) {
   const [state, dispatch] = useReducer(productsReducer, initialState);
   return (
     <ProductsDispatch.Provider value={dispatch}>
@@ -67,9 +66,9 @@ function ProductsProvider({children}){
 }
 
 
-const useProducts = ():any => [
-  {...productsStateSelector()},
-  {...productsDispatchSelector()}
+const useProducts = (): any => [
+  { ...productsStateSelector() },
+  { ...productsDispatchSelector() }
 ]
 
 

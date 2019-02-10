@@ -9,7 +9,8 @@ import { UserProvider, CartProvider, CheckoutProvider } from 'src/store'
 
 const Stripe = StripeProvider as any
 
-function App (props: any) {
+function App(props: any) {
+  console.log(props)
   return (
     <Stripe apiKey={process.env.REACT_APP_STRIPE_TOKEN}>
       <Elements>
@@ -17,7 +18,7 @@ function App (props: any) {
           <CheckoutProvider>
             <UserProvider>
               <BcMenu {...props}>
-                <Routes {...props}/>
+                <Routes {...props} />
               </BcMenu>
             </UserProvider>
           </CheckoutProvider>
@@ -27,5 +28,5 @@ function App (props: any) {
   )
 }
 
-  
+
 export { App }

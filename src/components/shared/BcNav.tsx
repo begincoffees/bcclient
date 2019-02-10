@@ -1,34 +1,27 @@
-import React, { useCallback } from 'react';
-import { Layout, Menu, Icon  } from 'antd';
+import React from 'react';
+import { Layout, Menu, Icon } from 'antd';
 import { Link, navigate } from '@reach/router';
 
-import { useUserState, useUserDispatch, useCart } from 'src/store';
+import { useUserState, useCart } from 'src/store';
 import { navMenu } from '../constants';
 
 const { Header } = Layout;
 
 function BcNav(props: any) {
-  const [cart,cartDispatch] = useCart()
+  const [cart,] = useCart()
   const user = useUserState();
-  const userDispatch = useUserDispatch()
-  
-  const logout = useCallback(() => 
-    userDispatch({
-      type: 'UPDATE_USER',
-      isLoggedIn: false,
-    })
-  ,[userDispatch]);
+
 
   return (
-    <Header style={{background: 'transparent'}}>
-      <Menu 
-        theme="light" 
-        mode="horizontal" 
+    <Header style={{ background: 'transparent' }}>
+      <Menu
+        theme="light"
+        mode="horizontal"
         defaultSelectedKeys={[props.location]}
         style={navMenu}
         onClick={() => props.cartOpen && props.toggleCart()}
       >
-        <Menu.Item 
+        <Menu.Item
           key="/"
         >
           <Link to="/">
@@ -42,18 +35,11 @@ function BcNav(props: any) {
           </Link>
         </Menu.Item>
 
-        <Menu.Item 
+        <Menu.Item
           key="/login"
           onClick={() => {
-            if(user.isLoggedIn){
-              localStorage.removeItem('BC_AUTH')
-              logout();
-
-              if(cart.items.length){
-                cartDispatch.clear()
-              }
-
-              navigate('/')
+            if (user.isLoggedIn) {
+              navigate('/logout')
             } else {
               navigate('/login')
             }
@@ -70,15 +56,16 @@ function BcNav(props: any) {
           </Link>
         </Menu.Item>
 
-          <Menu.Item 
-            key="/cart" 
-            onClick={props.toggleCart}
-          >
-            <span>Cart {`(${cart.itemsCount})`}</span>
-            <Icon type="shopping-cart"/>
-          </Menu.Item>
+        <Menu.Item
+          key="/cart"
+          onClick={props.toggleCart}
+        >
+          <span>Cart {`(${cart.itemsCount})`}</span>
+          <Icon type="shopping-cart" />
+        </Menu.Item>
       </Menu>
     </Header>
-)}
+  )
+}
 
 export { BcNav }
