@@ -35,25 +35,12 @@ export async function getAccounts(
   }
 }
 
-export async function setAccountsQuery(
-  client: any,
-  nextState: AccountData
-) {
-  const prev = await client.cache.readQuery({ query: userQuery })
-
-  await client.cache.writeQuery({
-    query: userQuery,
-    data: { ...prev, ...nextState }
-  })
-}
-
 
 function AccountsPage({ ...props }) {
   const client = useApolloClient();
   const user = useUserState();
   const dispatch = useUserDispatch();
   const token = localStorage.getItem('BC_AUTH')
-
 
   const setAccount = useCallback((nextState: AccountData) => {
     dispatch({

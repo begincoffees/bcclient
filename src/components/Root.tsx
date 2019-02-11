@@ -3,8 +3,8 @@ import { ApolloProvider as ApolloHooks } from 'react-apollo-hooks';
 
 import { App, Loader } from 'src/components';
 import { client } from 'src/store'
-
 import 'src/styles/index.css';
+
 
 function Root() {
   return (
@@ -15,5 +15,6 @@ function Root() {
     </ApolloHooks>
   )
 }
+
 
 export { Root }

@@ -7,11 +7,15 @@ import { getMainDefinition } from 'apollo-utilities';
 import { OperationDefinitionNode } from 'graphql';
 import { WebSocketLink } from 'apollo-link-ws';
 import dotenv from 'dotenv';
+import { withClientState } from 'apollo-link-state';
+import { setAccountsQuery } from 'src';
 
+/** globals */
 dotenv.load()
 const cache = new InMemoryCache();
 const token = localStorage.getItem('BC_AUTH') || 'bigboi';
 
+/** Links */
 const httpLink = createHttpLink({
   uri: `${process.env.REACT_APP_SERVER_URL}/bcgraph`,
 })
@@ -30,6 +34,25 @@ const authLink = new ApolloLink((operation, forward: any) => {
   return forward(operation)
 })
 
+const stateLink = withClientState({
+  cache,
+  resolvers: {
+    Mutation: {
+      setAccountsQuery,
+      updateNetworkStatus: (_link: any, { isConnected }: any, { cache }: any) => {
+        const data = {
+          networkStatus: {
+            __typename: 'NetworkStatus',
+            isConnected
+          },
+        };
+        cache.writeData({ data });
+        return null;
+      },
+    },
+  }
+});
+
 const link = split(({ query }) => {
   const { kind, ...rest } = getMainDefinition(query);
   return (
@@ -38,9 +61,11 @@ const link = split(({ query }) => {
   )
 },
   wsLink,
-  authLink.concat(httpLink)
+  authLink.concat(stateLink.concat(httpLink))
 );
 
+
+/** cache and client */
 persistCache({
   cache,
   storage: window.localStorage
@@ -50,5 +75,7 @@ const client = new ApolloClient({
   link,
   cache,
 })
+
+
 
 export { client }
