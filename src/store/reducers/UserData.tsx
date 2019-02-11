@@ -6,12 +6,12 @@ import React, {
   useEffect,
 } from 'react';
 import { useQuery } from 'react-apollo-hooks';
+import { userQuery } from '..';
 import { Alert } from 'antd';
-
-import { userQuery } from 'src/store';
 
 
 export interface UserState {
+  readonly loading: boolean;
   readonly isLoggedIn: boolean;
   readonly email?: string,
   readonly id?: string,
@@ -23,7 +23,15 @@ export interface UserState {
 }
 
 const initialUserState: UserState = {
+  loading: true,
   isLoggedIn: false,
+  id: '',
+  email: '',
+  stripeId: '',
+  purchases: [],
+  sales: [],
+  products: [],
+  role: ''
 }
 
 export type UserAction = {
@@ -37,9 +45,10 @@ export type UserAction = {
 function userReducer(state: UserState, action: UserAction) {
   switch (action.type) {
     case 'UPDATE_USER':
-      const { email, id, stripeId } = action
+      const { email, id, stripeId, ...rest } = action
       return {
         ...state,
+        ...rest,
         isLoggedIn: action.isLoggedIn,
         email,
         id,
@@ -93,7 +102,6 @@ function UserProvider({ children }) {
       />
     )
   }
-
   return (
     <UserDispatch.Provider value={dispatch}>
       <UserStore.Provider value={state}>
@@ -104,6 +112,7 @@ function UserProvider({ children }) {
 }
 
 export {
+  initialUserState,
   userReducer,
   UserStore,
   UserDispatch,

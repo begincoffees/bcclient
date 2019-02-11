@@ -1,32 +1,42 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { navigate } from '@reach/router';
 import { useApolloClient } from 'react-apollo-hooks';
-import { Loader, useCart } from 'src';
-import { useUserDispatch } from 'src/store';
+import { useCart, Loader } from 'src';
+import { useUserDispatch, initialUserState, useUserState } from 'src/store';
 
 // takes router props and apollo client props
-function LogoutPage(props: any) {
+function LogoutPage({ ...props }) {
   const client = useApolloClient()
+  const user = useUserState();
   const [cart, cartDispatch] = useCart();
-  const userDispatch = useUserDispatch()
+  const dispatch = useUserDispatch()
 
-  const logout = useCallback(() =>
-    userDispatch({
-      type: 'UPDATE_USER',
-      isLoggedIn: false,
-    })
-    , [userDispatch]
-  );
+  const [done, setDone] = useState(false)
 
-  if (cart.items.length) {
-    cartDispatch.clear()
-  }
+  const initialState = {
+    type: 'UPDATE_USER',
+    loading: false,
+    ...initialUserState
+  } as any
 
-  if (client) {
+  const logout = useCallback((client) => {
+    client.cache.writeData({ id: user.id, ...initialState })
     localStorage.removeItem('BC_AUTH')
-    logout()
-    client.resetStore()
-    navigate("/")
+    dispatch(initialState)
+    if (cart.items.length) {
+      cartDispatch.clear()
+    }
+    setDone(true)
+  }, [dispatch]);
+
+
+
+  useEffect(() => {
+    logout(client)
+  }, [])
+
+  if (done) {
+    navigate('/')
   }
 
   return <Loader />

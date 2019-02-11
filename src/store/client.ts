@@ -13,7 +13,7 @@ const cache = new InMemoryCache();
 const token = localStorage.getItem('BC_AUTH') || 'bigboi';
 
 const httpLink = createHttpLink({
-  uri: `${process.env.REACT_APP_SERVER_URL}/bcgraph`, 
+  uri: `${process.env.REACT_APP_SERVER_URL}/bcgraph`,
 })
 
 const query = `?headers={Authorization:Bearer ${process.env.REACT_APP_PRISMA_WEB_SOCKET_TOKEN}}`
@@ -35,8 +35,8 @@ const link = split(({ query }) => {
   return (
     kind === 'OperationDefinition' &&
     (rest as OperationDefinitionNode).operation === 'subscription'
-    )
-  },
+  )
+},
   wsLink,
   authLink.concat(httpLink)
 );
@@ -50,7 +50,5 @@ const client = new ApolloClient({
   link,
   cache,
 })
-
-
 
 export { client }

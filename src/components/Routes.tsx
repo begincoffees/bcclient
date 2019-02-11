@@ -10,7 +10,7 @@ import {
   LogoutPage,
   RegisterPage,
   ShopPage,
-  ProductPage
+  ProductPage,
 } from 'src/components'
 
 function Routes(props: any) {

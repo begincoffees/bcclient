@@ -5,13 +5,27 @@ import {
   InventoryList,
   PurchaseList,
   SalesList,
-  UserInfo
+  UserInfo,
+  Loader
 } from 'src/components';
-import { useUserState } from 'src/store';
+import { Alert } from 'antd';
 
 
-function AccountsContainer(props: any) {
-  const user = useUserState();
+function AccountsContainer({ user, ...props }) {
+  if (user.loading) {
+    return <Loader />
+  }
+
+  if (!user.isLoggedIn) {
+    return (
+      <BcContainer>
+        <Alert
+          type="warning"
+          message="Please Log In to View Your Account"
+        />
+      </BcContainer>
+    )
+  }
 
   return (
     <BcContainer margin="auto 3.5rem">

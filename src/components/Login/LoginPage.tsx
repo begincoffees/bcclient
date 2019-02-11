@@ -2,20 +2,16 @@ import React, { useCallback } from 'react';
 import { Link } from '@reach/router';
 import { useApolloClient } from 'react-apollo-hooks';
 
-import { LoginForm, BcModal } from 'src/components';
-import { useUserDispatch } from 'src/store'
+import { LoginForm, BcModal, getAccounts } from 'src/components';
+import { useUserDispatch, userQuery } from 'src/store'
 
 function LoginPage(props: any) {
   const client = useApolloClient()
   const dispatch = useUserDispatch()
-
-  const login = useCallback(() =>
-    dispatch({
-      type: 'UPDATE_USER',
-      isLoggedIn: true
-    }), [dispatch]
-  );
-
+  const login = useCallback((
+    client: any,
+    dispatch: Function
+  ) => { getAccounts(client, { query: userQuery }) }, [dispatch])
   return (
     <BcModal
       title={'Welcome to Begin Coffees'}
