@@ -2,6 +2,8 @@ import React, { Suspense } from 'react';
 
 import { AccountsContainer } from './AccountsContainer';
 import { Loader } from 'src/components';
+import { currentUser } from 'src/store';
+import { useQuery } from 'react-apollo-hooks';
 
 
 export async function getAccounts(
@@ -19,6 +21,8 @@ export async function getAccounts(
 }
 
 function AccountsPage() {
+  const q = useQuery(currentUser)
+  console.log(q)
   return (
     <Suspense fallback={<Loader />}>
       <AccountsContainer />

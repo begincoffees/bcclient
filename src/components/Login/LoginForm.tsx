@@ -47,7 +47,7 @@ function LoginForm(props: any) {
         style={{ width: '50%', marginLeft: '25%', marginRight: '25%' }}
         type="primary"
         onClick={async () => {
-          const viewer = client && client.readQuery({ query: userQuery })
+
           const result = await client!.mutate({
             mutation: LOG_IN,
             variables: { email, password },
@@ -55,12 +55,17 @@ function LoginForm(props: any) {
           })
 
           const res = result.data && (result.data as any).login
-          if (res.token) {
-            // save token, update app state
-            localStorage.setItem('BC_AUTH', res.token)
-            loginUser({ ...res.user })
 
-            client!.writeData({ data: { viewer: { ...viewer, ...res } } })
+          if (res.token) {
+
+            // save token
+            localStorage.setItem('BC_AUTH', res.token)
+
+
+            // update state
+            loginUser({ ...res.user })
+            const currentUser = { ...res, __typename: 'CurrentUser' }
+            client!.writeData({ data: { ...currentUser } })
 
             // clear cart,
             // cart items should not persist over changes in account

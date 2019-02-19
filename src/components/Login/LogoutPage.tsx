@@ -20,7 +20,7 @@ function LogoutPage() {
   } as any
 
   const logout = useCallback((client) => {
-    client.cache.writeData({ __typename: 'Viewer', id: user.id, ...initialState })
+    client.cache.writeData({ __typename: 'CurrentUser', id: user.id, ...initialState })
     localStorage.removeItem('BC_AUTH')
     dispatch(initialState)
     if (cart.items.length) {

@@ -9,8 +9,9 @@ import { WebSocketLink } from 'apollo-link-ws';
 import dotenv from 'dotenv';
 import { withClientState } from 'apollo-link-state';
 
-import { userQuery, initialUserState } from 'src/store';
+import { initialUserState } from 'src/store';
 import { AccountData } from 'src/types';
+import { currentUser } from './queries';
 
 /** globals */
 dotenv.load()
@@ -39,36 +40,41 @@ const authLink = new ApolloLink((operation, forward: any) => {
 const stateLink = withClientState({
   cache,
   defaults: {
-    __typename: 'CurrentUser',
-    currentUser: { ...initialUserState }
+    currentUser: {
+      __typename: 'CurrentUser',
+      isLoggedIn: false,
+      id: '',
+      email: '',
+      stripeId: '',
+      purchases: [],
+      sales: [],
+      products: [],
+      role: ''
+    }
   },
   resolvers: {
     Mutation: {
-      getCurrentUser: async (_link: any, { ...nextState }: AccountData, { cache }: any) => {
-
-        await cache.writeData({
+      setCurrentUser: async (_link: any, { ...nextState }: AccountData, { cache }: any) => {
+        const prevState = await cache.readQuery({ query: currentUser })
+        console.log({ setCurrentUserPrevState: prevState })
+        cache.writeQuery({
           __typename: 'CurrentUser',
-          ...initialUserState
+          ...nextState
         })
 
         return null
       },
       getAccountsQuery: async (_link: any, { ...nextState }: AccountData, { cache }: any) => {
-        const res = await cache.readQuery({ query: userQuery })
+        const res = await cache.readQuery({ query: currentUser })
         return res
       },
       clearAccountsQuery: (_link: any, { ...nextState }: AccountData, { cache }: any) => {
-        const prevState = cache.readQuery({ query: userQuery })
         const data = {
-          viewer: {
-            __typename: 'Viewer',
-            me: {
-              ...prevState,
-              ...initialUserState
-            }
+          currentUser: {
+            __typename: 'CurrentUser',
+            ...initialUserState
           }
         }
-        console.log(data)
         cache.writeData({ data })
         return null
       },
