@@ -16,11 +16,12 @@ function LogoutPage({ ...props }) {
   const initialState = {
     type: 'UPDATE_USER',
     loading: false,
+    isLoggedIn: false,
     ...initialUserState
   } as any
 
   const logout = useCallback((client) => {
-    client.cache.writeData({ id: user.id, ...initialState })
+    client.cache.writeData({ __typename: 'Viewer', id: user.id, ...initialState })
     localStorage.removeItem('BC_AUTH')
     dispatch(initialState)
     if (cart.items.length) {

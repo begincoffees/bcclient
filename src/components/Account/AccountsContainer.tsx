@@ -6,34 +6,51 @@ import {
   PurchaseList,
   SalesList,
   UserInfo,
-  Loader
+  Loader,
 } from 'src/components';
 import { Alert } from 'antd';
+import { useQuery } from 'react-apollo-hooks';
+import { userQuery } from 'src/store';
 
+function AccountsContainer({ ...props }) {
+  const { loading, data } = useQuery(userQuery)
+  const user = data && data.viewer && data.viewer.me
 
-function AccountsContainer({ user, ...props }) {
-  if (user.loading) {
+  if (loading || !data || !data.viewer) {
     return <Loader />
   }
 
-  if (!user.isLoggedIn) {
+  if (user && user.id) {
     return (
-      <BcContainer>
-        <Alert
-          type="warning"
-          message="Please Log In to View Your Account"
-        />
-      </BcContainer>
+      <Accounts user={user} />
     )
   }
 
   return (
+    <BcContainer>
+      <Alert
+        type="warning"
+        message="Please Log In to View Your Account"
+      />
+    </BcContainer>
+  )
+}
+
+function Accounts({ user, ...props }) {
+  return (
     <BcContainer margin="auto 3.5rem">
       <UserInfo me={user} />
-      <SalesList isVendor={user && user.role === 'VENDOR'} sales={user.sales} />
-      <InventoryList isVendor={user && user.role === 'VENDOR'} products={user.products} />
+      <SalesList
+        isVendor={user.role === 'VENDOR'}
+        sales={user.sales}
+      />
+      <InventoryList
+        isVendor={user.role === 'VENDOR'}
+        products={user.products}
+      />
       <PurchaseList purchases={user.purchases} />
     </BcContainer>
   )
 }
-export { AccountsContainer } 
+
+export { Accounts, AccountsContainer }

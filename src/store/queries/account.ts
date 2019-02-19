@@ -14,7 +14,7 @@ export const productsQuery = gql`
       }
     }
   }
-` 
+`
 
 export const purchasesQuery = gql`
   query {
@@ -32,7 +32,7 @@ export const purchasesQuery = gql`
       }
     }
   }
-` 
+`
 
 export const salesQuery = gql`
   query {
@@ -87,7 +87,7 @@ export const customerSignup = gql`
     $password: String!
   ){
     customerSignup (
-      firstName: $firstName 
+      firstName: $firstName
       lastName: $lastName
       email: $email
       password: $password
@@ -98,4 +98,44 @@ export const customerSignup = gql`
        }
     }
   }
+`
+
+export const setAccountsQuery = gql`
+  {
+    mutation {
+      setAccountsQuery @client
+    }
+  }
+`
+
+export const getAccountsQuery = gql`
+  query {
+    viewer {
+      me @client {
+        id
+        email
+        stripeId
+        purchases
+        sales
+        products
+        role
+      }
+    }
+  }
+`
+
+export const currentUser = gql`
+{
+    currentUser @client {
+      loading
+      isLoggedIn
+      id
+      email
+      stripeId
+      purchases
+      sales
+      products
+      role
+    }
+}
 `

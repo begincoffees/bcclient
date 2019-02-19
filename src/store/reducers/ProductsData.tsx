@@ -21,9 +21,8 @@ function productsReducer(state: ProductsState, action: ProductsAction) {
   }
 }
 
-// State Tree Provider
+// initialize reducer tree
 const initialState = {}
-
 export const ProductsState = createContext(initialState);
 export const ProductsDispatch = createContext((() => initialState) as Dispatch<ProductsAction>)
 
@@ -49,7 +48,6 @@ const productsDispatchSelector = () => {
 // selector style HOF to handle item count and price calculation
 const productsStateSelector = () => {
   const state = useContext(ProductsState);
-
   return { ...state }
 }
 

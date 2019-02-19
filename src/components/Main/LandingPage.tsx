@@ -3,6 +3,7 @@ import { Alert, Row } from 'antd';
 
 import { BcContainer } from 'src/components';
 import { useUserState } from 'src/store';
+import { PayPalButton } from 'react-paypal-button'
 
 function LandingPage(props: any) {
   const user = useUserState();
@@ -24,10 +25,18 @@ function LandingPage(props: any) {
               showIcon={false}
             />)}
       </Row>
+      <Row>
+        <PayPalButton
+          env='sandbox'
+          amount={1.00}
+          sandboxID='AWi1Yk1c7jzFlcNifMMiTAUHu7zEZelJodUVYfArCE3GxhprdwAbXZREQLzeKGPmPgI2pL6UUGWshiRB'
+          currency='USD'
+        />
+      </Row>
     </BcContainer>
   )
 }
 
 
-
-export { LandingPage }  
+{/*  */ }
+export { LandingPage }

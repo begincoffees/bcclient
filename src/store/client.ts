@@ -8,7 +8,8 @@ import { OperationDefinitionNode } from 'graphql';
 import { WebSocketLink } from 'apollo-link-ws';
 import dotenv from 'dotenv';
 import { withClientState } from 'apollo-link-state';
-import { setAccountsQuery } from 'src';
+import { userQuery, initialUserState } from 'src';
+import { AccountData } from 'src/components';
 
 /** globals */
 dotenv.load()
@@ -36,9 +37,40 @@ const authLink = new ApolloLink((operation, forward: any) => {
 
 const stateLink = withClientState({
   cache,
+  defaults: {
+    __typename: 'CurrentUser',
+    currentUser: { ...initialUserState }
+  },
   resolvers: {
     Mutation: {
-      setAccountsQuery,
+      getCurrentUser: async (_link: any, { ...nextState }: AccountData, { cache }: any) => {
+
+        await cache.writeData({
+          __typename: 'CurrentUser',
+          ...initialUserState
+        })
+
+        return null
+      },
+      getAccountsQuery: async (_link: any, { ...nextState }: AccountData, { cache }: any) => {
+        const res = await cache.readQuery({ query: userQuery })
+        return res
+      },
+      clearAccountsQuery: (_link: any, { ...nextState }: AccountData, { cache }: any) => {
+        const prevState = cache.readQuery({ query: userQuery })
+        const data = {
+          viewer: {
+            __typename: 'Viewer',
+            me: {
+              ...prevState,
+              ...initialUserState
+            }
+          }
+        }
+        console.log(data)
+        cache.writeData({ data })
+        return null
+      },
       updateNetworkStatus: (_link: any, { isConnected }: any, { cache }: any) => {
         const data = {
           networkStatus: {
@@ -46,6 +78,8 @@ const stateLink = withClientState({
             isConnected
           },
         };
+
+        console.log(data)
         cache.writeData({ data });
         return null;
       },
