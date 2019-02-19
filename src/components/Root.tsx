@@ -1,4 +1,5 @@
 import React, { Suspense } from 'react';
+import { ApolloProvider } from 'react-apollo';
 import { ApolloProvider as ApolloHooks } from 'react-apollo-hooks';
 
 import { App, Loader } from 'src/components';
@@ -8,11 +9,13 @@ import 'src/styles/index.css';
 
 function Root() {
   return (
-    <ApolloHooks client={client}>
-      <Suspense fallback={<Loader />}>
-        <App />
-      </Suspense>
-    </ApolloHooks>
+    <ApolloProvider client={client}>
+      <ApolloHooks client={client}>
+        <Suspense fallback={<Loader />}>
+          <App />
+        </Suspense>
+      </ApolloHooks>
+    </ApolloProvider>
   )
 }
 

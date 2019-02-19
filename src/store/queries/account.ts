@@ -100,30 +100,6 @@ export const customerSignup = gql`
   }
 `
 
-export const setAccountsQuery = gql`
-  {
-    mutation {
-      setAccountsQuery @client
-    }
-  }
-`
-
-export const getAccountsQuery = gql`
-  query {
-    viewer {
-      me @client {
-        id
-        email
-        stripeId
-        purchases
-        sales
-        products
-        role
-      }
-    }
-  }
-`
-
 export const currentUser = gql`
   query CurrentUser {
     currentUser @client {
@@ -137,3 +113,24 @@ export const currentUser = gql`
       role
     }
   }`
+
+export const setCurrentUser = gql`
+  mutation setCurrentUser(
+    $isLoggedIn: Boolean
+    $id: String
+    $email: String
+    $stripeId: String
+  ) {
+    setCurrentUser(
+      id: $id
+      isLoggedIn: $isLoggedIn
+      email: $email
+      stripeId: $stripeId
+    ) @client {
+      id
+      isLoggedIn
+      email
+      stripeId
+    }
+  }
+`

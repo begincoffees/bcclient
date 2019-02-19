@@ -22,7 +22,7 @@ export async function getAccounts(
 
 function AccountsPage() {
   const q = useQuery(currentUser)
-  console.log(q)
+  console.log(q.refetch())
   return (
     <Suspense fallback={<Loader />}>
       <AccountsContainer />

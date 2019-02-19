@@ -54,15 +54,28 @@ const stateLink = withClientState({
   },
   resolvers: {
     Mutation: {
-      setCurrentUser: async (_link: any, { ...nextState }: AccountData, { cache }: any) => {
-        const prevState = await cache.readQuery({ query: currentUser })
-        console.log({ setCurrentUserPrevState: prevState })
-        cache.writeQuery({
-          __typename: 'CurrentUser',
-          ...nextState
-        })
+      setCurrentUser: async (_link: any, { id, email, isLoggedIn, stripeId = '' }: any, { cache }: any) => {
+        const data = {
+          currentUser: {
+            __typename: 'CurrentUser',
+            id,
+            email,
+            isLoggedIn,
+            stripeId
+          }
+        }
 
-        return null
+        console.log({ id, email, isLoggedIn, stripeId })
+
+        cache.writeData({ data })
+
+        return ({
+          __typename: 'CurrentUser',
+          id,
+          email,
+          isLoggedIn,
+          stripeId
+        })
       },
       getAccountsQuery: async (_link: any, { ...nextState }: AccountData, { cache }: any) => {
         const res = await cache.readQuery({ query: currentUser })

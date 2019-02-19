@@ -1,11 +1,19 @@
 import React, { useState, useCallback } from 'react';
+import { Mutation } from 'react-apollo';
 import { useApolloClient } from 'react-apollo-hooks';
 import { navigate } from '@reach/router';
 import { Form, Button, Input } from 'antd'
 
-import { useUserDispatch, useCart, LOG_IN, userQuery } from 'src/store';
+import {
+  useUserDispatch,
+  useCart,
+  LOG_IN,
+  setCurrentUser,
+  // userQuery,
+} from 'src/store';
 
 const FormItem = Form.Item;
+
 function LoginForm(props: any) {
   const client = useApolloClient();
   const dispatch = useUserDispatch();
@@ -42,43 +50,51 @@ function LoginForm(props: any) {
         />
       </FormItem>
 
-      <Button
-        htmlType="button"
-        style={{ width: '50%', marginLeft: '25%', marginRight: '25%' }}
-        type="primary"
-        onClick={async () => {
-
-          const result = await client!.mutate({
-            mutation: LOG_IN,
-            variables: { email, password },
-            updateQueries: { query: userQuery }
-          })
-
-          const res = result.data && (result.data as any).login
-
-          if (res.token) {
-
-            // save token
-            localStorage.setItem('BC_AUTH', res.token)
-
-
-            // update state
-            loginUser({ ...res.user })
-            const currentUser = { ...res, __typename: 'CurrentUser' }
-            client!.writeData({ data: { ...currentUser } })
-
-            // clear cart,
-            // cart items should not persist over changes in account
-            if (cart.items.length) {
-              cartDispatch.clear()
-            }
-          }
-
-          props.closeModal()
-        }}
+      <Mutation
+        mutation={LOG_IN}
+        variables={{ email, password }}
       >
-        Login
-      </Button>
+        {(loginUserz, { data }) => (
+          <Button
+            htmlType='button'
+            style={{ width: '50%', marginLeft: '25%', marginRight: '25%' }}
+            type="primary"
+            onClick={async () => {
+              try {
+                const response: any = await loginUserz()
+
+                const auth = await response.data && (response.data as any).login
+                console.log(auth)
+
+                if (auth.token) {
+
+                  // save token
+                  localStorage.setItem('BC_AUTH', auth.token)
+
+                  // update state
+
+                  loginUser({ ...auth.user })
+                  client!.mutate({
+                    mutation: setCurrentUser,
+                    variables: { id: auth.user.id, email: auth.user.email, isLoggedIn: !!auth.user.id },
+                  })
+                  // clear cart,
+                  // cart items should not persist over changes in account
+                  if (cart.items.length) {
+                    cartDispatch.clear()
+                  }
+
+                  props.closeModal()
+                }
+              } catch (err) {
+                console.log({ loginErr: err.message })
+              }
+            }}
+          >
+            Login
+          </Button>
+        )}
+      </Mutation>
     </Form>
   )
 }
