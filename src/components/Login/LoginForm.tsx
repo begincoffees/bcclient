@@ -9,6 +9,7 @@ import {
   useCart,
   LOG_IN,
   setCurrentUser,
+  currentUser,
   // userQuery,
 } from 'src/store';
 
@@ -56,7 +57,7 @@ function LoginForm(props: any) {
       >
         {(loginUserz, { data }) => (
           <Button
-            htmlType='button'
+            htmlType="button"
             style={{ width: '50%', marginLeft: '25%', marginRight: '25%' }}
             type="primary"
             onClick={async () => {
@@ -76,7 +77,14 @@ function LoginForm(props: any) {
                   loginUser({ ...auth.user })
                   client!.mutate({
                     mutation: setCurrentUser,
-                    variables: { id: auth.user.id, email: auth.user.email, isLoggedIn: !!auth.user.id },
+                    variables: {
+                      __typename: 'CurrentUser',
+                      id: auth.user.id,
+                      email: auth.user.email,
+                      isLoggedIn: !!auth.user.id,
+                      stripeId: ''
+                    },
+                    refetchQueries: [currentUser]
                   })
                   // clear cart,
                   // cart items should not persist over changes in account

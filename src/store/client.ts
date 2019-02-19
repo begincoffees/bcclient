@@ -12,6 +12,7 @@ import { withClientState } from 'apollo-link-state';
 import { initialUserState } from 'src/store';
 import { AccountData } from 'src/types';
 import { currentUser } from './queries';
+import gql from 'graphql-tag';
 
 /** globals */
 dotenv.load()
@@ -39,6 +40,68 @@ const authLink = new ApolloLink((operation, forward: any) => {
 
 const stateLink = withClientState({
   cache,
+  typeDefs: gql`
+    type CurrentUser {
+      isLoggedIn: Boolean,
+      id: String,
+      email: String,
+      stripeId: String,
+      role: String
+    }
+
+    type Invoice {
+      id: String
+      createdAt: DateTime
+      updatedAt: DateTime
+      amount: String
+      email: String
+      stripePaymentId: String
+      stripeCustomerId: String
+      status: String
+      shippingAddress: ShippingAddress
+    }
+
+    type ShippingAddress {
+      id: ID! @unique
+      createdAt: DateTime!
+      updatedAt: DateTime!
+      recipient: String!
+      street: String!
+      city: String!
+      state: String!
+      zip: String!
+      user: User @unique
+      invoices: [Invoice!]!
+    }
+
+    type Product {
+      id: ID! @unique
+      name: String
+      price: String
+      description: String
+      varietal: String
+      vendor: User
+    }
+
+    type User {
+      id: String
+      role: String
+      email: String
+      firstName: String
+      lastName: String
+      bizName: String
+      password: String
+      stripeId: String @unique
+      shippingAddresses: [ShippingAddress]
+    }
+
+    type Account {
+      products: [Product]
+      purchases: [Invoice]
+      sales: [Invoice]
+    }
+
+  `,
   defaults: {
     currentUser: {
       __typename: 'CurrentUser',
@@ -46,40 +109,47 @@ const stateLink = withClientState({
       id: '',
       email: '',
       stripeId: '',
+      role: ''
+    },
+    account: {
+      __typename: 'Account',
       purchases: [],
       sales: [],
       products: [],
-      role: ''
     }
   },
   resolvers: {
     Mutation: {
       setCurrentUser: async (_link: any, { id, email, isLoggedIn, stripeId = '' }: any, { cache }: any) => {
-        const data = {
-          currentUser: {
+        try {
+          const prevState = await cache.readQuery({ query: currentUser })
+
+          const data = {
+            currentUser: {
+              __typename: 'CurrentUser',
+              ...prevState,
+              id,
+              email,
+              isLoggedIn,
+              stripeId,
+            }
+          }
+
+          console.log({ id, email, isLoggedIn, stripeId })
+
+          await cache.writeQuery({ query: currentUser, data })
+
+          return ({
             __typename: 'CurrentUser',
             id,
             email,
             isLoggedIn,
-            stripeId
-          }
+            stripeId,
+          })
+        } catch (err) {
+          console.log(err)
+          return
         }
-
-        console.log({ id, email, isLoggedIn, stripeId })
-
-        cache.writeData({ data })
-
-        return ({
-          __typename: 'CurrentUser',
-          id,
-          email,
-          isLoggedIn,
-          stripeId
-        })
-      },
-      getAccountsQuery: async (_link: any, { ...nextState }: AccountData, { cache }: any) => {
-        const res = await cache.readQuery({ query: currentUser })
-        return res
       },
       clearAccountsQuery: (_link: any, { ...nextState }: AccountData, { cache }: any) => {
         const data = {
