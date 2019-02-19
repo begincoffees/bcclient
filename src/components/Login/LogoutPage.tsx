@@ -22,7 +22,8 @@ function LogoutPage() {
     client!.mutate({
       mutation: setCurrentUser,
       variables: {
-        ...initialUserState
+        ...initialUserState,
+        role: ''
       },
       refetchQueries: [{ query: currentUser }]
     })

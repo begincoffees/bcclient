@@ -82,9 +82,10 @@ function LoginForm(props: any) {
                       id: auth.user.id,
                       email: auth.user.email,
                       isLoggedIn: !!auth.user.id,
-                      stripeId: ''
+                      stripeId: '',
+                      role: ''
                     },
-                    refetchQueries: [currentUser]
+                    refetchQueries: [{ query: currentUser }]
                   })
                   // clear cart,
                   // cart items should not persist over changes in account

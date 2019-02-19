@@ -9,8 +9,6 @@ import { WebSocketLink } from 'apollo-link-ws';
 import dotenv from 'dotenv';
 import { withClientState } from 'apollo-link-state';
 
-import { initialUserState } from 'src/store';
-import { AccountData } from 'src/types';
 import { currentUser } from './queries';
 import gql from 'graphql-tag';
 
@@ -120,7 +118,7 @@ const stateLink = withClientState({
   },
   resolvers: {
     Mutation: {
-      setCurrentUser: async (_link: any, { id, email, isLoggedIn, stripeId = '' }: any, { cache }: any) => {
+      setCurrentUser: async (_link: any, { id, email, isLoggedIn, stripeId = '', role = '' }: any, { cache }: any) => {
         try {
           const prevState = await cache.readQuery({ query: currentUser })
 
@@ -132,34 +130,26 @@ const stateLink = withClientState({
               email,
               isLoggedIn,
               stripeId,
+              role
             }
           }
 
-          console.log({ id, email, isLoggedIn, stripeId })
+          console.log({ linkResolver: { id, email, isLoggedIn, stripeId, role } })
 
           await cache.writeQuery({ query: currentUser, data })
 
-          return ({
-            __typename: 'CurrentUser',
-            id,
-            email,
-            isLoggedIn,
-            stripeId,
-          })
+          return ({ ...data.currentUser })
         } catch (err) {
           console.log(err)
-          return
-        }
-      },
-      clearAccountsQuery: (_link: any, { ...nextState }: AccountData, { cache }: any) => {
-        const data = {
-          currentUser: {
+          return ({
             __typename: 'CurrentUser',
-            ...initialUserState
-          }
+            isLoggedIn: false,
+            id: '',
+            email: '',
+            stripeId: '',
+            role: ''
+          })
         }
-        cache.writeData({ data })
-        return null
       },
       updateNetworkStatus: (_link: any, { isConnected }: any, { cache }: any) => {
         const data = {

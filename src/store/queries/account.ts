@@ -107,9 +107,6 @@ export const currentUser = gql`
       id
       email
       stripeId
-      purchases
-      sales
-      products
       role
     }
   }`
@@ -120,17 +117,20 @@ export const setCurrentUser = gql`
     $id: String
     $email: String
     $stripeId: String
+    $role: String
   ) {
     setCurrentUser(
       id: $id
       isLoggedIn: $isLoggedIn
       email: $email
       stripeId: $stripeId
+      role: $role
     ) @client {
       id
       isLoggedIn
       email
       stripeId
+      role
     }
   }
 `
