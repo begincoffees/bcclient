@@ -125,17 +125,13 @@ export const getAccountsQuery = gql`
 `
 
 export const currentUser = gql`
-{
-    currentUser @client {
-      loading
-      isLoggedIn
-      id
-      email
-      stripeId
-      purchases
-      sales
-      products
-      role
-    }
-}
-`
+  query CurrentUser {
+    isLoggedIn
+    id
+    email
+    stripeId
+    purchases
+    sales
+    products
+    role
+  }`

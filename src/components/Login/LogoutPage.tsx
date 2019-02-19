@@ -4,8 +4,7 @@ import { useApolloClient } from 'react-apollo-hooks';
 import { useCart, Loader } from 'src';
 import { useUserDispatch, initialUserState, useUserState } from 'src/store';
 
-// takes router props and apollo client props
-function LogoutPage({ ...props }) {
+function LogoutPage() {
   const client = useApolloClient()
   const user = useUserState();
   const [cart, cartDispatch] = useCart();

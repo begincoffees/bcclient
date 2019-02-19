@@ -8,8 +8,9 @@ import { OperationDefinitionNode } from 'graphql';
 import { WebSocketLink } from 'apollo-link-ws';
 import dotenv from 'dotenv';
 import { withClientState } from 'apollo-link-state';
-import { userQuery, initialUserState } from 'src';
-import { AccountData } from 'src/components';
+
+import { userQuery, initialUserState } from 'src/store';
+import { AccountData } from 'src/types';
 
 /** globals */
 dotenv.load()

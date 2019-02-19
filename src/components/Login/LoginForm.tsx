@@ -54,13 +54,13 @@ function LoginForm(props: any) {
             updateQueries: { query: userQuery }
           })
 
-          const res = result.data && result.data.login
+          const res = result.data && (result.data as any).login
           if (res.token) {
             // save token, update app state
             localStorage.setItem('BC_AUTH', res.token)
             loginUser({ ...res.user })
 
-            client && await client.writeData({ data: { viewer: { ...viewer, ...res } } })
+            client!.writeData({ data: { viewer: { ...viewer, ...res } } })
 
             // clear cart,
             // cart items should not persist over changes in account

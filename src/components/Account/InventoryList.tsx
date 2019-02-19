@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useApolloClient } from 'react-apollo-hooks';
 import { Table, Collapse, Layout, Button, Form, Input, Card } from 'antd';
 
-import { ProductData } from 'src/components';
+import { ProductData } from 'src/types';
 import { lightBlue, formItemLayout } from 'src/components/constants';
 import { addProduct } from 'src/store';
 import { Uuid } from 'src/utils';
@@ -30,7 +30,7 @@ export const labels = [
   }
 ]
 
-function InventoryList(props: any) { 
+function InventoryList(props: any) {
   const key = new Uuid()
   const client = useApolloClient();
 
@@ -66,7 +66,7 @@ function InventoryList(props: any) {
   /** render */
   return (
     <Collapse bordered={true}>
-      <Collapse.Panel 
+      <Collapse.Panel
         key={`${key}`}
         header={(
           <h4 style={lightBlue}>
@@ -75,17 +75,17 @@ function InventoryList(props: any) {
         )}
       >
         <Layout onMouseLeave={() => setCollapsed(true)}>
-          <Layout.Sider 
-            theme="dark" 
-            width="9rem" 
-            collapsed={isCollapsed} 
+          <Layout.Sider
+            theme="dark"
+            width="9rem"
+            collapsed={isCollapsed}
             collapsedWidth=""
           >
-            {!isCollapsed && 
+            {!isCollapsed &&
               <>
-                <Button 
-                  type="default" 
-                  style={{margin: '1rem'}}
+                <Button
+                  type="default"
+                  style={{ margin: '1rem' }}
                   disabled={addView}
                   onClick={() => {
                     viewTable(false)
@@ -95,10 +95,10 @@ function InventoryList(props: any) {
                   Add Product
                 </Button>
 
-                {addView && 
-                  <Button 
+                {addView &&
+                  <Button
                     type="default"
-                    style={{margin: '1rem 25%'}}
+                    style={{ margin: '1rem 25%' }}
                     onClick={() => {
                       viewTable(true)
                       viewAdd(false)
@@ -108,9 +108,9 @@ function InventoryList(props: any) {
                   </Button>}
               </>}
           </Layout.Sider>
-          
+
           <Layout.Content onMouseEnter={() => setCollapsed(false)}>
-            {tableView && 
+            {tableView &&
               <Table
                 columns={labels}
                 dataSource={props.products}
@@ -118,40 +118,40 @@ function InventoryList(props: any) {
               />
             }
 
-            {addView && 
+            {addView &&
               <Card>
                 <Card type="inner">
                   <Form.Item {...formItemLayout}>
-                    <Input 
-                      onInput={(e) => updateProductForm('name', e.currentTarget.value, product)} 
-                      placeholder="name" 
-                    />
-                  </Form.Item>
-
-                  <Form.Item {...formItemLayout}>
-                    <Input 
-                      onInput={(e) => updateProductForm('description', e.currentTarget.value, product)} 
-                      placeholder="description" 
-                    />
-                  </Form.Item>
-
-                  <Form.Item {...formItemLayout} >
-                    <Input 
-                      onInput={(e) => updateProductForm('price', e.currentTarget.value, product)}
-                      placeholder="price" 
+                    <Input
+                      onInput={(e) => updateProductForm('name', e.currentTarget.value, product)}
+                      placeholder="name"
                     />
                   </Form.Item>
 
                   <Form.Item {...formItemLayout}>
                     <Input
-                      onInput={(e) => updateProductForm('varietal', e.currentTarget.value, product)} 
-                      placeholder="varietal" 
+                      onInput={(e) => updateProductForm('description', e.currentTarget.value, product)}
+                      placeholder="description"
                     />
                   </Form.Item>
-                  <Button 
-                    type="primary"                 
+
+                  <Form.Item {...formItemLayout} >
+                    <Input
+                      onInput={(e) => updateProductForm('price', e.currentTarget.value, product)}
+                      placeholder="price"
+                    />
+                  </Form.Item>
+
+                  <Form.Item {...formItemLayout}>
+                    <Input
+                      onInput={(e) => updateProductForm('varietal', e.currentTarget.value, product)}
+                      placeholder="varietal"
+                    />
+                  </Form.Item>
+                  <Button
+                    type="primary"
                     onClick={() => submitNewProduct(product)}
-                    style={{margin: 'auto 25%'}}
+                    style={{ margin: 'auto 25%' }}
                   >
                     Add To Inventory
                   </Button>

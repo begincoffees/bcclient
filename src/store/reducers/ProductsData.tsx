@@ -1,5 +1,5 @@
 import React, { useCallback, createContext, Dispatch, useContext, useReducer } from 'react';
-import { ProductData } from 'src/components';
+import { ProductData } from 'src/types';
 
 interface ProductsState extends ProductData { }
 
@@ -53,7 +53,7 @@ const productsStateSelector = () => {
 
 // tslint:disable-next-line:typedef
 function ProductsProvider({ children }) {
-  const [state, dispatch] = useReducer(productsReducer, initialState);
+  const [state, dispatch] = useReducer(productsReducer, initialState as any);
   return (
     <ProductsDispatch.Provider value={dispatch}>
       <ProductsState.Provider value={state}>

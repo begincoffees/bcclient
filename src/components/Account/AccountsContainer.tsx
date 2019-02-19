@@ -1,4 +1,6 @@
 import React from 'react';
+import { Alert } from 'antd';
+import { useQuery } from 'react-apollo-hooks';
 
 import {
   BcContainer,
@@ -8,12 +10,11 @@ import {
   UserInfo,
   Loader,
 } from 'src/components';
-import { Alert } from 'antd';
-import { useQuery } from 'react-apollo-hooks';
 import { userQuery } from 'src/store';
+import { AccountData } from 'src/types';
 
-function AccountsContainer({ ...props }) {
-  const { loading, data } = useQuery(userQuery)
+function AccountsContainer() {
+  const { loading, data } = useQuery(userQuery, { fetchPolicy: 'network-only', suspend: false })
   const user = data && data.viewer && data.viewer.me
 
   if (loading || !data || !data.viewer) {
@@ -36,19 +37,16 @@ function AccountsContainer({ ...props }) {
   )
 }
 
-function Accounts({ user, ...props }) {
+function Accounts({ user }: { user: AccountData }) {
+  const { products, role, purchases, sales, ...me } = user;
+  const isVendor = user.role === 'VENDOR';
+
   return (
     <BcContainer margin="auto 3.5rem">
-      <UserInfo me={user} />
-      <SalesList
-        isVendor={user.role === 'VENDOR'}
-        sales={user.sales}
-      />
-      <InventoryList
-        isVendor={user.role === 'VENDOR'}
-        products={user.products}
-      />
-      <PurchaseList purchases={user.purchases} />
+      <UserInfo me={me} />
+      <SalesList isVendor={isVendor} sales={sales} />
+      <InventoryList isVendor={isVendor} products={products} />
+      <PurchaseList purchases={purchases} />
     </BcContainer>
   )
 }
