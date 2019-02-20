@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { navigate } from '@reach/router';
 import { useApolloClient } from 'react-apollo-hooks';
 import { useCart, Loader } from 'src';
-import { useUserDispatch, initialUserState, setCurrentUser, currentUser } from 'src/store';
+import { useUserDispatch, initialUserState } from 'src/store';
 
 function LogoutPage() {
   const client = useApolloClient()
@@ -19,14 +19,18 @@ function LogoutPage() {
   } as any
 
   const logout = useCallback((client) => {
-    client!.mutate({
-      mutation: setCurrentUser,
-      variables: {
-        ...initialUserState,
+    const data = {
+      currentUser: {
+        __typename: 'CurrentUser',
+        id: '',
+        email: '',
+        isLoggedIn: false,
+        stripeId: '',
         role: ''
-      },
-      refetchQueries: [{ query: currentUser }]
-    })
+      }
+    }
+
+    client!.cache.writeData({ data })
     localStorage.removeItem('BC_AUTH')
     dispatch(initialState)
     if (cart.items.length) {

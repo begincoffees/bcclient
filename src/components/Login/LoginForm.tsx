@@ -8,8 +8,6 @@ import {
   useUserDispatch,
   useCart,
   LOG_IN,
-  setCurrentUser,
-  currentUser,
   // userQuery,
 } from 'src/store';
 
@@ -75,18 +73,18 @@ function LoginForm(props: any) {
                   // update state
 
                   loginUser({ ...auth.user })
-                  client!.mutate({
-                    mutation: setCurrentUser,
-                    variables: {
+                  const data = {
+                    currentUser: {
                       __typename: 'CurrentUser',
                       id: auth.user.id,
                       email: auth.user.email,
                       isLoggedIn: !!auth.user.id,
                       stripeId: '',
                       role: ''
-                    },
-                    refetchQueries: [{ query: currentUser }]
-                  })
+                    }
+                  }
+
+                  client!.cache.writeData({ data })
                   // clear cart,
                   // cart items should not persist over changes in account
                   if (cart.items.length) {
