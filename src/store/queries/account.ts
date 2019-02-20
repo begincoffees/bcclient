@@ -100,8 +100,7 @@ export const customerSignup = gql`
   }
 `
 
-export const currentUser = gql`
-  query CurrentUser {
+export const currentUser = gql`{
     currentUser @client {
       isLoggedIn
       id
