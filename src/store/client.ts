@@ -1,16 +1,22 @@
 import ApolloClient from 'apollo-client';
 import { ApolloLink, split } from 'apollo-link';
 import { createHttpLink } from 'apollo-link-http';
+import { ApolloCache } from 'apollo-cache';
 import { persistCache } from 'apollo-cache-persist';
-import { InMemoryCache } from 'apollo-cache-inmemory';
+import { InMemoryCache, NormalizedCacheObject } from 'apollo-cache-inmemory';
 import { getMainDefinition } from 'apollo-utilities';
 import { OperationDefinitionNode } from 'graphql';
 import { WebSocketLink } from 'apollo-link-ws';
 import dotenv from 'dotenv';
 import { withClientState } from 'apollo-link-state';
 
-import { currentUser } from './queries';
-import gql from 'graphql-tag';
+
+/** types */
+export interface AuthArgs {
+  token: string;
+  email: string;
+  id: string;
+};
 
 /** globals */
 dotenv.load()
@@ -35,131 +41,87 @@ const authLink = new ApolloLink((operation, forward: any) => {
   })
   return forward(operation)
 })
-
 const stateLink = withClientState({
   cache,
-  typeDefs: gql`
-    type CurrentUser {
-      isLoggedIn: Boolean,
-      id: String,
-      email: String,
-      stripeId: String,
-      role: String
-    }
-
-    type Invoice {
-      id: String
-      createdAt: DateTime
-      updatedAt: DateTime
-      amount: String
-      email: String
-      stripePaymentId: String
-      stripeCustomerId: String
-      status: String
-      shippingAddress: ShippingAddress
-    }
-
-    type ShippingAddress {
-      id: ID! @unique
-      createdAt: DateTime!
-      updatedAt: DateTime!
-      recipient: String!
-      street: String!
-      city: String!
-      state: String!
-      zip: String!
-      user: User @unique
-      invoices: [Invoice!]!
-    }
-
-    type Product {
-      id: ID! @unique
-      name: String
-      price: String
-      description: String
-      varietal: String
-      vendor: User
-    }
-
-    type User {
-      id: String
-      role: String
-      email: String
-      firstName: String
-      lastName: String
-      bizName: String
-      password: String
-      stripeId: String @unique
-      shippingAddresses: [ShippingAddress]
-    }
-
-    type Account {
-      products: [Product]
-      purchases: [Invoice]
-      sales: [Invoice]
-    }
-
-  `,
   defaults: {
     currentUser: {
       __typename: 'CurrentUser',
       isLoggedIn: false,
       id: '',
       email: '',
-      stripeId: '',
+      token: '',
       role: ''
     },
     account: {
       __typename: 'Account',
+      role: '',
+      stripeId: '',
       purchases: [],
       sales: [],
-      products: [],
+      products: []
     }
   },
   resolvers: {
     Mutation: {
-      setCurrentUser: async (_link: any, { id, email, isLoggedIn, stripeId = '', role = '' }: any, { cache }: any) => {
-        try {
-          const prevState = await cache.readQuery({ query: currentUser })
-
-          const data = {
-            currentUser: {
-              __typename: 'CurrentUser',
-              ...prevState,
-              id,
-              email,
-              isLoggedIn,
-              stripeId,
-              role
-            }
+      loginUser: async (
+        _link: ApolloLink,
+        { id, email, token }: { id: string; email: string; token: string; },
+        { cache }: { cache: ApolloCache<NormalizedCacheObject> }
+      ) => {
+        const data = {
+          currentUser: {
+            __typename: 'CurrentUser',
+            id,
+            email,
+            isLoggedIn: !!id,
+            token
           }
+        }
 
-          console.log({ linkResolver: { id, email, isLoggedIn, stripeId, role } })
+        cache.writeData({ data })
 
-          await cache.writeQuery({ query: currentUser, data })
-
-          return ({ ...data.currentUser })
-        } catch (err) {
-          console.log(err)
-          return ({
+        return null
+      },
+      logoutUser: async (
+        _link: ApolloLink,
+        _args: {},
+        { cache }: { cache: ApolloCache<NormalizedCacheObject> }
+      ) => {
+        const data = {
+          currentUser: {
             __typename: 'CurrentUser',
             isLoggedIn: false,
             id: '',
             email: '',
+            token: '',
+            role: '',
+          },
+          account: {
+            __typename: 'Account',
             stripeId: '',
-            role: ''
-          })
+            purchases: [],
+            sales: [],
+            products: []
+          }
         }
+
+        await cache.writeData({ data })
+
+        return null
+
       },
-      updateNetworkStatus: (_link: any, { isConnected }: any, { cache }: any) => {
+      updateNetworkStatus: (
+        _link: ApolloLink,
+        { isConnected }: { isConnected: boolean },
+        { cache }: any
+      ) => {
+
         const data = {
           networkStatus: {
             __typename: 'NetworkStatus',
             isConnected
           },
         };
-
-        console.log(data)
         cache.writeData({ data });
         return null;
       },

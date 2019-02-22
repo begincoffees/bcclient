@@ -1,9 +1,9 @@
 import React, { useState, useCallback } from 'react';
-import { useApolloClient } from 'react-apollo-hooks';
 import { navigate } from '@reach/router';
 import { Form, Input, Button, Select } from 'antd';
 
 import { customerSignup, vendorSignup } from 'src/store'
+import { ApolloConsumer } from 'react-apollo';
 
 
 const FormItem = Form.Item;
@@ -24,26 +24,33 @@ const initialForm = {
 }
 
 function RegisterForm() {
-  const client = useApolloClient()
+  return (
+    <ApolloConsumer>
+      {client => <RegisterContainer client={client} />}
+    </ApolloConsumer>
+  )
+}
+
+function RegisterContainer(props: any) {
   const [accountType, setType] = useState('')
   const [form, updateForm] = useState(initialForm)
 
   const submitPurchase = useCallback(async () => {
-    const mutation = accountType === 'Customer' ? 
-      customerSignup 
-    : vendorSignup;
+    const mutation = accountType === 'Customer' ?
+      customerSignup
+      : vendorSignup;
 
-    const variables = accountType === 'Customer' ? 
-      ({...form.customer})
-    : ({...form.vendor});
+    const variables = accountType === 'Customer' ?
+      ({ ...form.customer })
+      : ({ ...form.vendor });
 
-    await client!.mutate({
+    await props.client.mutate({
       mutation,
       variables
     })
 
     navigate('/')
-  },[form]);
+  }, [form]);
 
   const updateField = useCallback((field: string, value: any) => {
     updateForm({
@@ -59,8 +66,8 @@ function RegisterForm() {
     <Form>
       {!accountType && (
         <FormItem label="Account Type">
-          <Select 
-            defaultValue="Select Account Type" 
+          <Select
+            defaultValue="Select Account Type"
             onChange={(value: any) => setType(value)}
           >
             <Option value="Customer">Customer</Option>
@@ -71,87 +78,87 @@ function RegisterForm() {
 
       {accountType === 'Customer' &&
         <>
-        <FormItem label="First Name">
-          <Input 
-            onChange={(e) => {
-              updateField('customer', {firstName: e.target.value})
-            }}
-          />
-        </FormItem>
+          <FormItem label="First Name">
+            <Input
+              onChange={(e) => {
+                updateField('customer', { firstName: e.target.value })
+              }}
+            />
+          </FormItem>
 
-        <FormItem label="Last Name">
-          <Input 
-            onChange={(e) => {
-              updateField('customer', {lastName: e.target.value})
-            }}
-          />
-        </FormItem>   
+          <FormItem label="Last Name">
+            <Input
+              onChange={(e) => {
+                updateField('customer', { lastName: e.target.value })
+              }}
+            />
+          </FormItem>
 
-        <FormItem label="Email">
-          <Input 
-            onChange={(e) => {
-              updateField('customer', {email: e.target.value})
-            }}
-          />
-        </FormItem>
+          <FormItem label="Email">
+            <Input
+              onChange={(e) => {
+                updateField('customer', { email: e.target.value })
+              }}
+            />
+          </FormItem>
 
-        <FormItem label="Password">
-          <Input 
-            onChange={(e) => {
-              updateField('customer', {password: e.target.value})
-            }}
-          />
-        </FormItem>
+          <FormItem label="Password">
+            <Input
+              onChange={(e) => {
+                updateField('customer', { password: e.target.value })
+              }}
+            />
+          </FormItem>
 
 
-        <FormItem>
-          <Button
-            style={{width: '50%', marginLeft: '25%', marginRight: '25%'}}
-            type="primary"
-            onClick={() => submitPurchase()}
-          >
-            Create Account
+          <FormItem>
+            <Button
+              style={{ width: '50%', marginLeft: '25%', marginRight: '25%' }}
+              type="primary"
+              onClick={() => submitPurchase()}
+            >
+              Create Account
           </Button>
-        </FormItem>
+          </FormItem>
         </>
       }
 
       {accountType === 'Vendor' &&
         <>
-        <FormItem label="Business Name">
-          <Input 
-            onChange={(e) => {
-              updateField('vendor', {name: e.target.value})
-            }}
-          />
-        </FormItem>  
+          <FormItem label="Business Name">
+            <Input
+              onChange={(e) => {
+                updateField('vendor', { name: e.target.value })
+              }}
+            />
+          </FormItem>
 
-        <FormItem label="Email">
-          <Input 
-            onChange={(e) => {
-              updateField('vendor', {email: e.target.value})
-            }}
-          />
-        </FormItem>
+          <FormItem label="Email">
+            <Input
+              onChange={(e) => {
+                updateField('vendor', { email: e.target.value })
+              }}
+            />
+          </FormItem>
 
-        <FormItem label="Password">
-          <Input 
-            onChange={(e) => {
-              updateField('vendor', {password: e.target.value})
-            }}
-          />
-        </FormItem>
+          <FormItem label="Password">
+            <Input
+              onChange={(e) => {
+                updateField('vendor', { password: e.target.value })
+              }}
+            />
+          </FormItem>
 
 
-        <FormItem>
-          <Button
-            style={{width: '50%', marginLeft: '25%', marginRight: '25%'}}
-            type="primary"
-            onClick={() => submitPurchase()}
-          >
-            Create Account
+          <FormItem>
+            <Button
+              style={{ width: '50%', marginLeft: '25%', marginRight: '25%' }}
+              type="primary"
+              onClick={() => submitPurchase()}
+            >
+              Create Account
           </Button>
-        </FormItem>
+          </FormItem>
         </>
       }
     </Form>

@@ -101,14 +101,13 @@ export const customerSignup = gql`
 `
 
 export const currentUser = gql`{
-    currentUser @client {
-      isLoggedIn
-      id
-      email
-      stripeId
-      role
-    }
-  }`
+  currentUser @client {
+    isLoggedIn
+    id
+    email
+    token
+  }
+}`
 
 export const setCurrentUser = gql`
   mutation setCurrentUser(

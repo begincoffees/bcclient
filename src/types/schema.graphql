@@ -1,0 +1,84 @@
+type Address {
+  id: String!
+  zip: String!
+}
+
+type Product {
+  id: String!
+  name: String!
+  price: String!
+  description: String!
+  varietal: String!
+}
+
+
+type Purchase {
+  id: String!
+  amount: String!
+  createdAt: String!
+  items: [Product]
+  shippingAddress: Address
+}
+
+type Sales {
+  id: String!
+  amount: String!
+  email: String!
+  createdAt: String!
+  items: [Product]
+}
+
+type CurrentUser {
+  ...UserInfo
+  ...Purchases
+  ...Sales
+  ...Products
+}
+
+
+fragment UserInfo on User {
+  id
+  isLoggedIn
+  email
+  token
+  role
+  permissions
+}
+
+fragment Purchases on User {
+  purchases {
+    id
+    amount
+    createdAt
+    items {
+      name
+      price
+    }
+    shippingAddress {
+      id
+      zip
+    }
+  }
+}
+
+fragment Sales on User {
+  sales {
+    id
+    amount
+    email
+    createdAt
+    items {
+      id
+    }
+  }
+}
+
+fragment Products on User {
+  products {
+    id
+    name
+    price
+    description
+    varietal
+  }
+}

@@ -1,108 +1,126 @@
-import React, { useState, useCallback } from 'react';
-import { Mutation } from 'react-apollo';
-import { useApolloClient } from 'react-apollo-hooks';
-import { navigate } from '@reach/router';
+import React, { useState } from 'react';
+import { Mutation, ApolloConsumer } from 'react-apollo';
 import { Form, Button, Input } from 'antd'
 
 import {
-  useUserDispatch,
   useCart,
-  LOG_IN,
-  // userQuery,
+  auth,
+  currentUser,
+  accountQuery,
 } from 'src/store';
+import { navigate } from '@reach/router';
 
 const FormItem = Form.Item;
 
-function LoginForm(props: any) {
-  const client = useApolloClient();
-  const dispatch = useUserDispatch();
+function LoginForm() {
+  return (
+    <ApolloConsumer>
+      {client => <LoginContainer client={client} />}
+    </ApolloConsumer>
+  )
+}
 
+function LoginContainer(props: any) {
   const [email, updateEmail] = useState('')
   const [password, updatePassword] = useState('')
   const [cart, cartDispatch] = useCart();
 
-  const loginUser = useCallback((userInfo) => {
-    dispatch({
-      type: 'UPDATE_USER',
-      isLoggedIn: true,
-      ...userInfo
-    })
-
-    navigate('/')
-  }, [dispatch]);
-
   return (
-    <Form>
-      <FormItem label="email">
-        <Input
-          name="email"
-          onChange={(e) => updateEmail(e.target.value)}
-          value={email}
-        />
-      </FormItem>
+    <Mutation
+      mutation={auth}
+      variables={{ email, password }}
+    >
+      {(authUser, { data }) => {
+        return (
+          <Form>
+            <FormItem label="email">
+              <Input
+                name="email"
+                onChange={(e) => updateEmail(e.target.value)}
+                value={email}
+              />
+            </FormItem>
 
-      <FormItem label="password">
-        <Input
-          onChange={(e) => updatePassword(e.target.value)}
-          value={password}
-          type="password"
-        />
-      </FormItem>
+            <FormItem label="password">
+              <Input
+                onChange={(e) => updatePassword(e.target.value)}
+                value={password}
+                type="password"
+              />
+            </FormItem>
 
-      <Mutation
-        mutation={LOG_IN}
-        variables={{ email, password }}
-      >
-        {(loginUserz, { data }) => (
-          <Button
-            htmlType="button"
-            style={{ width: '50%', marginLeft: '25%', marginRight: '25%' }}
-            type="primary"
-            onClick={async () => {
-              try {
-                const response: any = await loginUserz()
 
-                const auth = await response.data && (response.data as any).login
-                console.log(auth)
+            <Button
+              htmlType="button"
+              style={{ width: '50%', marginLeft: '25%', marginRight: '25%' }}
+              type="primary"
+              onClick={async () => {
+                try {
+                  const response: any = await authUser()
 
-                if (auth.token) {
+                  const auth = await response.data && (response.data as any).login
+                  console.log(auth)
 
-                  // save token
-                  localStorage.setItem('BC_AUTH', auth.token)
+                  if (auth && auth.token) {
 
-                  // update state
+                    // save token
+                    localStorage.setItem('BC_AUTH', auth.token)
 
-                  loginUser({ ...auth.user })
-                  const data = {
-                    currentUser: {
-                      __typename: 'CurrentUser',
-                      id: auth.user.id,
-                      email: auth.user.email,
-                      isLoggedIn: !!auth.user.id,
-                      stripeId: '',
-                      role: ''
+                    // update state
+                    const purchases = auth.user.purchases || [];
+                    const sales = auth.user.sales || [];
+                    const products = auth.user.products || []
+
+                    const userData = {
+                      currentUser: {
+                        __typename: 'CurrentUser',
+                        id: auth.user.id,
+                        email,
+                        isLoggedIn: !!auth.user.id,
+                        token: auth.token,
+                        role: auth.user.role,
+                      }
                     }
-                  }
+                    const accountData = {
+                      account: {
+                        __typename: 'Account',
+                        role: auth.user.role,
+                        stripeId: auth.user.stripeId,
+                        purchases,
+                        sales,
+                        products
+                      }
+                    }
+                    await props.client.cache.writeQuery({
+                      query: currentUser,
+                      data: userData
+                    })
 
-                  client!.cache.writeData({ data })
-                  // clear cart,
-                  // cart items should not persist over changes in account
-                  if (cart.items.length) {
-                    cartDispatch.clear()
-                  }
+                    await props.client.cache.writeQuery({
+                      query: accountQuery,
+                      data: accountData
+                    })
 
-                  props.closeModal()
+
+                    // clear cart,
+                    // cart items should not persist over changes in account
+                    if (cart.items.length) {
+                      cartDispatch.clear()
+                    }
+
+                    navigate('/')
+                  }
+                } catch (err) {
+                  console.log({ loginErr: err.message })
                 }
-              } catch (err) {
-                console.log({ loginErr: err.message })
-              }
-            }}
-          >
-            Login
-          </Button>
-        )}
-      </Mutation>
-    </Form>
+              }}
+            >
+              Login
+            </Button>
+          </Form>
+        )
+      }}
+    </Mutation>
   )
 }
 

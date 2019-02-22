@@ -3,11 +3,7 @@ import React, {
   Dispatch,
   useReducer,
   useContext,
-  useEffect,
 } from 'react';
-import { useQuery } from 'react-apollo-hooks';
-import { userQuery } from '..';
-import { Alert } from 'antd';
 
 
 export interface UserState {
@@ -68,40 +64,29 @@ const useUserState = () => useContext(UserStore);
 
 // tslint:disable-next-line:typedef
 function UserProvider({ children }) {
-  const { data, errors } = useQuery(userQuery);
+  // const { , errors } = useQuery(accountQuery);
   const [state, dispatch] = useReducer(userReducer, initialUserState);
 
-  /** basically create an observable on the token */
-  const token = localStorage.getItem('BC_AUTH');
+  // /** basically create an observable on the token */
+  // const token = localStorage.getItem('BC_AUTH');
 
-  /**
-   * if logged in, query for user info and update store
-   */
+  // /**
+  //  * if logged in, query for user info and update store
+  //  */
 
-  useEffect(() => {
-    const user = data && data.viewer && data.viewer.me
+  // useEffect(() => {
+  //   const user = data && data.viewer && data.viewer.me
 
-    dispatch({
-      type: 'UPDATE_USER',
-      isLoggedIn: !!token,
-      id: user && user.id || '',
-      email: user && user.email || '',
-      stripeId: user && user.stripeId || ''
-    })
+  //   dispatch({
+  //     type: 'UPDATE_USER',
+  //     isLoggedIn: !!token,
+  //     id: user && user.id || '',
+  //     email: user && user.email || '',
+  //     stripeId: user && user.stripeId || ''
+  //   })
 
-  }, [token])
+  // }, [token])
 
-
-  if (errors) {
-    return (
-      <Alert
-        type="error"
-        message="Whoops! Refresh me beb!"
-        banner={true}
-        showIcon={false}
-      />
-    )
-  }
   return (
     <UserDispatch.Provider value={dispatch}>
       <UserStore.Provider value={state}>

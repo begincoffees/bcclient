@@ -21,12 +21,27 @@ type ClientUI = {
   mutate: Function;
 }
 
+interface Account {
+  role: string;
+  stripeId: string;
+  purchases: any[];
+  sales: any[];
+  products: any[];
+}
+
 interface CurrentUser {
   id: string;
   email: string;
   token: string;
   isLoggedIn: boolean;
+  role: string | null;
 }
+
+interface AuthRes {
+  token: String;
+  user: CurrentUser & Account
+}
+
 
 interface BaseProps {
   router: RouteProps;
@@ -34,4 +49,4 @@ interface BaseProps {
   currentUser?: CurrentUser;
 }
 
-export { AppProps, BaseProps, ClientUI, CurrentUser, RouteProps }
+export { AppProps, BaseProps, ClientUI, CurrentUser, RouteProps, Account, AuthRes }

@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
-import { useApolloClient } from 'react-apollo-hooks';
 import { Table, Collapse, Layout, Button, Form, Input, Card } from 'antd';
 
 import { ProductData } from 'src/types';
 import { lightBlue, formItemLayout } from 'src/components/constants';
 import { addProduct } from 'src/store';
 import { Uuid } from 'src/utils';
+import { Mutation } from 'react-apollo';
 
 export const labels = [
   {
@@ -30,9 +30,35 @@ export const labels = [
   }
 ]
 
+
+interface SubmitArgs {
+  product: any;
+  toggleUI: () => void;
+}
+
+function SubmitButton({ product, toggleUI }: SubmitArgs) {
+  return (
+    <Mutation mutation={addProduct} variables={product}>
+      {(submitNewProduct, { data }) => {
+        return (
+          <Button
+            type="primary"
+            onClick={() => {
+              submitNewProduct();
+              toggleUI();
+            }}
+            style={{ margin: 'auto 25%' }}
+          >
+            Add To Inventory
+          </Button>
+        )
+      }}
+    </Mutation>
+  )
+}
+
 function InventoryList(props: any) {
   const key = new Uuid()
-  const client = useApolloClient();
 
   /** state */
   const [isCollapsed, setCollapsed] = useState(true)
@@ -54,14 +80,10 @@ function InventoryList(props: any) {
     })
   }, [updateProduct])
 
-  const submitNewProduct = useCallback(async (variables) => {
-    await client!.mutate({
-      mutation: addProduct,
-      variables
-    })
+  const toggleUI = useCallback(() => {
     viewTable(true)
     viewAdd(false)
-  }, [client])
+  }, [viewTable])
 
   /** render */
   return (
@@ -148,13 +170,7 @@ function InventoryList(props: any) {
                       placeholder="varietal"
                     />
                   </Form.Item>
-                  <Button
-                    type="primary"
-                    onClick={() => submitNewProduct(product)}
-                    style={{ margin: 'auto 25%' }}
-                  >
-                    Add To Inventory
-                  </Button>
+                  <SubmitButton product={product} toggleUI={toggleUI} />
                 </Card>
               </Card>
             }

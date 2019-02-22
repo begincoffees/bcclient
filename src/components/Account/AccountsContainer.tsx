@@ -1,5 +1,5 @@
 import React from 'react';
-import { Alert } from 'antd';
+import { Query } from 'react-apollo';
 
 import {
   BcContainer,
@@ -9,49 +9,44 @@ import {
   UserInfo,
   Loader,
 } from 'src/components';
-import { currentUser } from 'src/store';
-import { AccountData } from 'src/types';
-import { Query } from 'react-apollo';
+import { accountQuery } from 'src/store';
+import { CurrentUser } from 'src/types';
 
-function AccountsContainer() {
+function AccountsContainer({ user }: { user: CurrentUser }) {
   return (
-    <Query query={currentUser}>
+    <Query
+      query={accountQuery}
+      variables={{ id: user.id }}
+    >
       {({ data, loading }) => {
-        const user = data && data.currentUser
-        console.log(user)
+
         if (loading || !data) {
           return <Loader />
         }
-
-        if (user && user.id) {
-          return (
-            <Accounts user={user} />
-          )
-        }
+        console.log(data)
+        const account = data && data.account;
 
         return (
-          <BcContainer>
-            <Alert
-              type="warning"
-              message="Please Log In to View Your Account"
-            />
-          </BcContainer>
+          <Accounts
+            user={user}
+            account={account}
+          />
         )
       }}
     </Query>
   )
 }
 
-function Accounts({ user }: { user: AccountData }) {
-  const { products, role, purchases, sales, ...me } = user;
-  const isVendor = user.role === 'VENDOR';
 
+// takes account prop
+function Accounts({ user, account }: any) {
+  const isVendor = user.role === 'VENDOR';
   return (
     <BcContainer margin="auto 3.5rem">
-      <UserInfo me={me} />
-      <SalesList isVendor={isVendor} sales={sales} />
-      <InventoryList isVendor={isVendor} products={products} />
-      <PurchaseList purchases={purchases} />
+      <UserInfo me={user} />
+      <SalesList isVendor={isVendor} sales={account.sales} />
+      <InventoryList isVendor={isVendor} products={account.products} />
+      <PurchaseList purchases={account.purchases} />
     </BcContainer>
   )
 }

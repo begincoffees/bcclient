@@ -1,44 +1,31 @@
-import React, { Suspense } from 'react';
-import { useQuery } from 'react-apollo-hooks';
-import { Row, Alert } from 'antd';
+import React from 'react';
+import { Row } from 'antd';
 
 import { BcContainer, ProductList, Loader } from 'src/components';
 import { feed, ProductsProvider } from 'src/store';
+import { Query } from 'react-apollo';
 
 function ShopContainer() {
-  const { data, errors } = useQuery(feed)
-  const feeds = data.feed || []
-
-  if(errors) {
-    return (
-      <Alert 
-        type="error" 
-        message="Whoops! Refresh me beb!" 
-        banner={true}
-        showIcon={false}
-      />
-    )
-  }
-  
   return (
-    <BcContainer>
-      <Suspense fallback={<Loader />}>
-        <Row style={{margin: 'auto 3.75rem'}}>
-          <ProductList products={feeds}/>
-        </Row>
-      </Suspense>
-    </BcContainer>
+    <Query query={feed}>
+      {({ data: { feed = [] }, loading }) => {
+        if (loading) { return <Loader /> }
+        return <ProductList products={feed} />
+      }}
+    </Query>
   )
 }
 
 function ShopPage() {
   return (
-    <Suspense fallback={<Loader />}>
-      <ProductsProvider>
-        <ShopContainer />
-      </ProductsProvider>
-    </Suspense>
+    <ProductsProvider>
+      <BcContainer>
+        <Row style={{ margin: 'auto 3.75rem' }}>
+          <ShopContainer />
+        </Row>
+      </BcContainer>
+    </ProductsProvider>
   )
 }
 
-export { ShopPage }  
+export { ShopPage }
