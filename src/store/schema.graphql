@@ -1,0 +1,9 @@
+type CurrentUser {
+  id: ID!
+  isLoggedIn: Boolean!
+  email: String!
+  token: String!
+  purchases: [Purchase]
+  sales: [Sales]
+  products: [Product]
+}

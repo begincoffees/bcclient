@@ -20,17 +20,20 @@ function AccountsContainer({ user }: { user: CurrentUser }) {
     >
       {({ data, loading }) => {
 
+        const isVendor = user.role === 'VENDOR';
+        const account = data && data.viewer.me;
+
         if (loading || !data) {
           return <Loader />
         }
-        console.log(data)
-        const account = data && data.account;
 
         return (
-          <Accounts
-            user={user}
-            account={account}
-          />
+          <BcContainer margin="auto 3.5rem">
+            <UserInfo me={user} />
+            <SalesList isVendor={isVendor} sales={account.sales} />
+            <InventoryList isVendor={isVendor} products={account.products} />
+            <PurchaseList purchases={account.purchases} />
+          </BcContainer>
         )
       }}
     </Query>
@@ -38,17 +41,4 @@ function AccountsContainer({ user }: { user: CurrentUser }) {
 }
 
 
-// takes account prop
-function Accounts({ user, account }: any) {
-  const isVendor = user.role === 'VENDOR';
-  return (
-    <BcContainer margin="auto 3.5rem">
-      <UserInfo me={user} />
-      <SalesList isVendor={isVendor} sales={account.sales} />
-      <InventoryList isVendor={isVendor} products={account.products} />
-      <PurchaseList purchases={account.purchases} />
-    </BcContainer>
-  )
-}
-
-export { Accounts, AccountsContainer }
+export { AccountsContainer }

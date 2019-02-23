@@ -5,7 +5,7 @@ import {
   BcMenu,
   Routes,
 } from 'src/components'
-import { UserProvider, CartProvider, CheckoutProvider } from 'src/store'
+import { CartProvider, CheckoutProvider } from 'src/store'
 
 const Stripe = StripeProvider as any
 
@@ -15,11 +15,9 @@ function App(props: any) {
       <Elements>
         <CartProvider>
           <CheckoutProvider>
-            <UserProvider>
-              <BcMenu {...props}>
-                <Routes {...props} />
-              </BcMenu>
-            </UserProvider>
+            <BcMenu {...props}>
+              <Routes {...props} />
+            </BcMenu>
           </CheckoutProvider>
         </CartProvider>
       </Elements>
