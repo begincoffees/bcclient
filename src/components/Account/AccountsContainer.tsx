@@ -21,7 +21,7 @@ function AccountsContainer({ user }: { user: CurrentUser }) {
       {({ data, loading }) => {
 
         const isVendor = user.role === 'VENDOR';
-        const account = data && data.viewer.me;
+        const account = data && data.viewer && data.viewer.me;
 
         if (loading || !data) {
           return <Loader />

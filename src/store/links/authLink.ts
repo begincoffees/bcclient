@@ -1,4 +1,4 @@
-import { ApolloLink } from "apollo-link";
+import { ApolloLink } from 'apollo-link';
 
 const token = localStorage.getItem('BC_AUTH') || 'bigboi';
 

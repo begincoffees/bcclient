@@ -118,7 +118,7 @@ function RegisterContainer(props: any) {
               onClick={() => submitPurchase()}
             >
               Create Account
-          </Button>
+            </Button>
           </FormItem>
         </>
       }
@@ -157,7 +157,7 @@ function RegisterContainer(props: any) {
               onClick={() => submitPurchase()}
             >
               Create Account
-          </Button>
+            </Button>
           </FormItem>
         </>
       }

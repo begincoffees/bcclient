@@ -1,7 +1,7 @@
-import { withClientState } from "apollo-link-state";
-import { ApolloLink } from "apollo-link";
-import { ApolloCache } from "apollo-cache";
-import { NormalizedCacheObject } from "apollo-cache-inmemory";
+import { withClientState } from 'apollo-link-state';
+import { ApolloLink } from 'apollo-link';
+import { ApolloCache } from 'apollo-cache';
+import { NormalizedCacheObject } from 'apollo-cache-inmemory';
 
 const stateLink = withClientState({
   defaults: {
