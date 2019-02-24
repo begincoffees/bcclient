@@ -17,6 +17,7 @@ function AccountsContainer({ user }: { user: CurrentUser }) {
     <Query
       query={accountQuery}
       variables={{ id: user.id }}
+      fetchPolicy="network-only"
     >
       {({ data, loading }) => {
 
