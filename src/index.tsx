@@ -1,12 +1,11 @@
-export * from './components';
 export * from './types';
 export * from './utils';
-export * from './store'
+export * from './store';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { Root } from 'src/components';
 import './styles/index.css';
+import { Root } from './components';
 
 ReactDOM.render(
   <Root />,

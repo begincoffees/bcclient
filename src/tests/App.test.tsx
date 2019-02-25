@@ -1,8 +1,9 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import { shallow } from './setupTests';
+import { App } from 'src/components'
 
 it('renders something without crashing', () => {
-  const div = document.createElement('div');
-  ReactDOM.render(<div />, div);
-  ReactDOM.unmountComponentAtNode(div);
+  const wrapper = shallow(<App />);
+  expect(wrapper).toBeTruthy();
 });
+
