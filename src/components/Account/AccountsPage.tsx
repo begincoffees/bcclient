@@ -1,24 +1,26 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import { AccountsContainer } from './AccountsContainer';
 import { Query } from 'react-apollo';
 import { currentUser } from 'src';
-import { Loader, BcContainer } from '..';
+import { Loader, BcContainer } from 'src/components';
 import { Alert } from 'antd';
 
 
 function AccountsPage() {
   return (
-    <Query query={currentUser}>
+    <Query query={currentUser} >
       {({ data, loading }) => {
         console.log(data)
         if (loading || !data) {
           return <Loader />
         }
 
-        if (!loading && data && data.currentUser.id) {
+        if (!loading && data && data.currentUser.isLoggedIn) {
           return (
-            <AccountsContainer user={data.currentUser} />
+            <Suspense fallback={<Loader />}>
+              <AccountsContainer user={data.currentUser} />
+            </Suspense>
           )
         }
 

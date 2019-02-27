@@ -1,4 +1,4 @@
-import { ApolloClient } from 'apollo-client';
+
 import dotenv from 'dotenv';
 
 import { createCache, createLink } from 'src/store'
@@ -14,16 +14,10 @@ export interface AuthArgs {
 /** globals */
 dotenv.load()
 
-async function createClient() {
+async function configureClient() {
   const cache = await createCache()
   const link = await createLink()
-
-  const client = new ApolloClient({
-    link,
-    cache,
-  })
-
-  return client
+  return { cache, link }
 }
 
-export { createClient }
+export { configureClient }

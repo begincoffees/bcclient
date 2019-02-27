@@ -14,20 +14,14 @@ import { CurrentUser } from 'src/types';
 
 function AccountsContainer({ user }: { user: CurrentUser }) {
   return (
-    <Query
-      query={accountQuery}
-      variables={{ id: user.id }}
-      fetchPolicy="network-only"
-    >
+    <Query query={accountQuery}>
       {({ data, loading }) => {
-
         const isVendor = user.role === 'VENDOR';
         const account = data && data.viewer && data.viewer.me;
-
+        console.log(data)
         if (loading || !data) {
           return <Loader />
         }
-
         return (
           <BcContainer margin="auto 3.5rem">
             <UserInfo me={user} />

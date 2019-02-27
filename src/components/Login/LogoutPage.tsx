@@ -1,8 +1,9 @@
 import React from 'react';
-import { Loader } from 'src';
-import { logoutUser } from 'src/store';
 import { Mutation } from 'react-apollo';
 import { Menu } from 'antd';
+
+import { Loader } from 'src/components';
+import { logoutUser } from 'src/store';
 
 const MenuItem = Menu.Item;
 

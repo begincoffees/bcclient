@@ -1,6 +1,7 @@
 export * from './client'
 export * from './queries';
 export * from './cache'
+export * from './resources'
 
 export * from './reducers/CartData';
 export * from './reducers/UserData';

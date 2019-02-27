@@ -4,7 +4,7 @@ import { Layout, Menu, Icon } from 'antd';
 import { Link, navigate } from '@reach/router';
 
 import { navMenu } from 'src/components';
-import { useCart, logoutUser } from 'src/store';
+import { useCart, logoutUser, accountQuery } from 'src/store';
 import { CurrentUser } from 'src/types';
 
 const { Header } = Layout;
@@ -20,7 +20,7 @@ function BcNav({ cartOpen, toggleCart, user, ...props }: NavArgs) {
   const [cart,] = useCart();
   return (
     <Mutation mutation={logoutUser}>
-      {(logoutUser, { data }) => {
+      {mutate => {
         return (
           <Header style={{ background: 'transparent' }}>
             <Menu
@@ -46,11 +46,50 @@ function BcNav({ cartOpen, toggleCart, user, ...props }: NavArgs) {
 
               <Menu.Item
                 key="/login"
-                onClick={() => {
-                  if (user.isLoggedIn) {
-                    logoutUser()
-                  } else {
-                    navigate('/login')
+                onClick={async () => {
+                  try {
+                    if (user.isLoggedIn) {
+                      mutate({
+                        update: (store, { data: { currentUser } }) => {
+                          const prevState = store.readQuery({ query: currentUser })
+                          const prevAccount = store.readQuery({ query: accountQuery })
+                          console.log(prevAccount)
+                          const me = {
+                            __typename: 'User',
+                            id: '',
+                            firstName: '',
+                            lastName: '',
+                            bizName: '',
+                            stripeId: '',
+                            purchases: [],
+                            sales: [],
+                            products: []
+                          }
+                          store.writeQuery({
+                            query: currentUser,
+                            data: {
+                              ...prevState,
+                              isLoggedIn: false,
+                              __typename: 'CurrentUser'
+                            }
+                          });
+                          store.writeQuery({
+                            query: accountQuery,
+                            data: {
+                              viewer: {
+                                __typename: 'Viewer',
+                                me
+                              }
+                            }
+                          });
+                        }
+                      });
+                      navigate('/')
+                    } else {
+                      navigate('/login')
+                    }
+                  } catch (err) {
+                    console.log({ logoutErr: err.message })
                   }
                 }}
               >
