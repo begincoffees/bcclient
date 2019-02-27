@@ -11,7 +11,6 @@ function AccountsPage() {
   return (
     <Query query={currentUser} >
       {({ data, loading }) => {
-        console.log(data)
         if (loading || !data) {
           return <Loader />
         }

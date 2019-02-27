@@ -13,7 +13,6 @@ function BcMenu({ ...props }: NavArgs) {
           return <Loader />
         }
         const user = data && data.currentUser
-        console.log(user)
         return (
           <>
             <Layout style={{ background: 'transparent' }}>

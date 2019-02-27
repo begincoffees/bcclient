@@ -53,7 +53,6 @@ function BcNav({ cartOpen, toggleCart, user, ...props }: NavArgs) {
                         update: (store, { data: { currentUser } }) => {
                           const prevState = store.readQuery({ query: currentUser })
                           const prevAccount = store.readQuery({ query: accountQuery })
-                          console.log(prevAccount)
                           const me = {
                             __typename: 'User',
                             id: '',
